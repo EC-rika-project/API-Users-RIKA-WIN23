@@ -1,11 +1,16 @@
 ﻿
 
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace API_Users_RIKA_WIN23.Infrastructure.Entities;
 
 
 public class UserWishListEntity
 {
+    [ForeignKey("UserId")]
     public string UserID { get; set; } = null!;​
+
+    public UserEntity User { get; set; } = new();
 
     public IEnumerable<string> ProductIDs { get; set; } = [];​
 }

@@ -1,0 +1,7 @@
+C:\ECEducation\Projekt\RIKA\API-Users-RIKA-WIN23\API-Users-RIKA-WIN23\obj\Debug\net8.0\API-Users-RIKA-WIN23.csproj.AssemblyReference.cache
+C:\ECEducation\Projekt\RIKA\API-Users-RIKA-WIN23\API-Users-RIKA-WIN23\obj\Debug\net8.0\API-Users-RIKA-WIN23.GeneratedMSBuildEditorConfig.editorconfig
+C:\ECEducation\Projekt\RIKA\API-Users-RIKA-WIN23\API-Users-RIKA-WIN23\obj\Debug\net8.0\API-Users-RIKA-WIN23.AssemblyInfoInputs.cache
+C:\ECEducation\Projekt\RIKA\API-Users-RIKA-WIN23\API-Users-RIKA-WIN23\obj\Debug\net8.0\API-Users-RIKA-WIN23.AssemblyInfo.cs
+C:\ECEducation\Projekt\RIKA\API-Users-RIKA-WIN23\API-Users-RIKA-WIN23\obj\Debug\net8.0\API-Users-RIKA-WIN23.csproj.CoreCompileInputs.cache
+C:\ECEducation\Projekt\RIKA\API-Users-RIKA-WIN23\API-Users-RIKA-WIN23\obj\Debug\net8.0\API-Users-RIKA-WIN23.MvcApplicationPartsAssemblyInfo.cache
+C:\ECEducation\Projekt\RIKA\API-Users-RIKA-WIN23\API-Users-RIKA-WIN23\obj\Debug\net8.0\API-Users-RIKA-WIN23.sourcelink.json

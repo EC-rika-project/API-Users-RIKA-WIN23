@@ -9,6 +9,6 @@ public class UserShoppingCartEntity
 
     public string UserId { get; set; } = null!;​
 
-    public IEnumerable<ShoppingCartItemEntity> Products { get; set; } = [];​
+    public ICollection<ShoppingCartItemEntity> Products { get; set; } = [];​
 
 }

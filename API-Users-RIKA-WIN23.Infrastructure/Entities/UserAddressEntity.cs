@@ -1,6 +1,7 @@
 ﻿
 
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API_Users_RIKA_WIN23.Infrastructure.Entities;
 
@@ -8,7 +9,10 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Entities;
 public class UserAddressEntity
 {
     [Required]
+    [ForeignKey("UserId")]
     public string UserId { get; set; } = null!​
+
+    public UserEntity User { get; set; } = new();
 
     [Required]
     public string AddressLine { get; set; } = null!;​  
@@ -23,4 +27,6 @@ public class UserAddressEntity
 
     [Required]
     public string Country { get; set; } = null!;​
+
+   
 }
