@@ -15,4 +15,8 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\API-Users-RIKA-WIN23.Infrastructure\API-Users-RIKA-WIN23.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
