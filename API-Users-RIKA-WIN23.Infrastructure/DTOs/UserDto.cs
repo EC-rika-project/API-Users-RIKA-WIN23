@@ -1,16 +1,16 @@
-﻿
+﻿using Microsoft.AspNetCore.Identity;
 
-//using API_Users_RIKA_WIN23.Infrastructure.Entities;
+namespace API_Users_RIKA_WIN23.Infrastructure.DTOs;
 
-//namespace API_Users_RIKA_WIN23.Infrastructure.DTOs;
+public class UserDto : IdentityUser
+{
+    public bool IsExternalAccount { get; set; } = false;
 
-//public class UserDto
-//{
-//    public bool IsExternalAccount { get; set; } = false;​
+    public UserProfileDto? Profile { get; set; }
 
-//    public UserProfileDto? Profile { get; set; } = new();​
+    public UserAddressDto? Address { get; set; }
 
-//    public UserAddressDto? Address { get; set; } = new();​
+    public UserWishListDto? WishList { get; set; }
 
-//    public ICollection<UserShoppingCartDto> ShoppingCarts { get; set; } = [];
-//}
+    public ICollection<UserShoppingCartDto>? ShoppingCarts { get; set; }
+}

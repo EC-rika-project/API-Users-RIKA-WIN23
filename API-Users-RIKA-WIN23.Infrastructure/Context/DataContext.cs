@@ -42,5 +42,8 @@ public class DataContext(DbContextOptions<DataContext> options) : IdentityDbCont
         builder.Entity<UserWishListEntity>()
             .HasOne(x => x.User)
             .WithOne(x => x.WishList);
+
+        builder.Entity<ShoppingCartItemEntity>()
+            .HasKey(x => new {x.UserShoppingCartId, x.ProductId});
     }
 }

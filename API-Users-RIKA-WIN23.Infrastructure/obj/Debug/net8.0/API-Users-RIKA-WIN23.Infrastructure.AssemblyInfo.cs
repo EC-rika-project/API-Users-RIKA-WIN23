@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("API-Users-RIKA-WIN23.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e1d06419b62f4697708ca2e403880bc591cd7b5e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+34a2bc7f99c639fbd9681b14c19b020d834a1d30")]
 [assembly: System.Reflection.AssemblyProductAttribute("API-Users-RIKA-WIN23.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("API-Users-RIKA-WIN23.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
