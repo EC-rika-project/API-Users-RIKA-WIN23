@@ -1,4 +1,5 @@
 ﻿using API_Users_RIKA_WIN23.Infrastructure.DTOs;
+using API_Users_RIKA_WIN23.Infrastructure.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,9 +13,10 @@ namespace API_Users_RIKA_WIN23.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthController(IConfiguration configuration) : ControllerBase
+public class AuthController(IConfiguration configuration, AuthService authService) : ControllerBase
 {
     private readonly IConfiguration _configuration = configuration;
+    private readonly AuthService _authService = authService;
 
     #region Token Authentication
     [HttpPost]
@@ -22,7 +24,7 @@ public class AuthController(IConfiguration configuration) : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            return BadRequest(ModelState); 
+            return BadRequest(ModelState);
         }
 
         if (user == null || string.IsNullOrWhiteSpace(user.UserName))
@@ -43,7 +45,7 @@ public class AuthController(IConfiguration configuration) : ControllerBase
                         new Claim(ClaimTypes.Role, $"{role}"),
                         new Claim("Permission", "CanEditAllUsers")
                     };
-                break;
+                    break;
                 case "User":
                     claims = new()
                     {
@@ -51,7 +53,7 @@ public class AuthController(IConfiguration configuration) : ControllerBase
                         new Claim(ClaimTypes.Role, $"{role}"),
                         new Claim("Permission", "CanEditSelf")
                     };
-                break;
+                    break;
                 default:
                     claims = new()
                     {
@@ -84,17 +86,17 @@ public class AuthController(IConfiguration configuration) : ControllerBase
     #endregion
 
     #region SignIn
-    [Route("/signin")]
+    [Route("/api/signin")]
     [HttpPost]
-    public async Task<IActionResult> SignIn(UserDto user)
+    public async Task<IActionResult> SignIn(SignInDto user)
     {
         if (ModelState.IsValid)
         {
             // Create a service for the following logic:
-            var result = true;//_authInService.SignInUserAsync(user);
-            if (result)
+            var result = await _authService.SignInUserAsync(user);
+            if (result != null)
             {
-                return Ok(result);   
+                return Ok(result);
             }
         }
 
@@ -103,19 +105,19 @@ public class AuthController(IConfiguration configuration) : ControllerBase
     #endregion
 
     #region SignUp
-    [Route("/signup")]
+    [Route("/api/signup")]
     [HttpPost]
-    public async Task<IActionResult> SignUp(UserDto user)
+    public async Task<IActionResult> SignUp(SignUpDto user)
     {
         if (ModelState.IsValid)
         {
             // Create a service for the following logic:
-            var result = true;//_authService.SignUpUserAsync(user);
+            var result = await _authService.SignUpUserAsync(user);
             if (result)
             {
                 return Created();
             }
-            // For example if email wasnt unique:
+            //For example if email wasnt unique:
             return Conflict();
         }
 
