@@ -403,8 +403,10 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
-/API-Users-RIKA-WIN23/obj/
-/API-Users-RIKA-WIN23.Infrastructure/bin
-/API-Users-RIKA-WIN23.Infrastructure/obj/
-/API-Users-RIKA-WIN23/bin/
+#/API-Users-RIKA-WIN23/obj/
+#/API-Users-RIKA-WIN23.Infrastructure/bin
+#/API-Users-RIKA-WIN23.Infrastructure/obj/
+#/API-Users-RIKA-WIN23/bin/
+/bin/
+/obj/
 /.vs/
