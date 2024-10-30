@@ -407,6 +407,6 @@ FodyWeavers.xsd
 #/API-Users-RIKA-WIN23.Infrastructure/bin
 #/API-Users-RIKA-WIN23.Infrastructure/obj/
 #/API-Users-RIKA-WIN23/bin/
-/bin/
-/obj/
-/.vs/
+**/bin/
+**/obj/
+**/.vs/
