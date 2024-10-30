@@ -8,7 +8,8 @@ public enum StatusCode
     ERROR = 400,
     UNAUTHORIZED = 401,
     NOT_FOUND = 404,
-    EXISTS = 409    
+    EXISTS = 409,    
+    INTERNAL_SERVER_ERROR = 500
 }
 
 public class ResponseResult

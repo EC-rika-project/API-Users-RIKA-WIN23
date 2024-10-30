@@ -79,4 +79,14 @@ public class ResponseFactory
             StatusCode = StatusCode.EXISTS
         };
     }
+
+    public static ResponseResult InternalServerError (string? message = null)
+    {
+        return new ResponseResult
+        {
+            Message = message ?? "Internal Server Error",
+            StatusCode = StatusCode.INTERNAL_SERVER_ERROR
+        };
+    }
+
 }
