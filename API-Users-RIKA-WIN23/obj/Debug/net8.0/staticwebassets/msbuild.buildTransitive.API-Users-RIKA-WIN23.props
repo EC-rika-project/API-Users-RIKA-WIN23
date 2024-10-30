@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\API-Users-RIKA-WIN23.props" />
-</Project>
