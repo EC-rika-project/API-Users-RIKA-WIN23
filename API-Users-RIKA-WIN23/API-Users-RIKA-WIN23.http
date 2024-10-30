@@ -1,6 +1,0 @@
-@API_Users_RIKA_WIN23_HostAddress = http://localhost:5277
-
-GET {{API_Users_RIKA_WIN23_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
