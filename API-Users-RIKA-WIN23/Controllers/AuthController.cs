@@ -1,4 +1,5 @@
 ﻿using API_Users_RIKA_WIN23.Infrastructure.DTOs;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -84,13 +85,13 @@ public class AuthController(IConfiguration configuration) : ControllerBase
 
     #region SignIn
     [Route("/signin")]
-    [HttpGet]
+    [HttpPost]
     public async Task<IActionResult> SignIn(UserDto user)
     {
         if (ModelState.IsValid)
         {
             // Create a service for the following logic:
-            var result = true;//_signInService.SignInUserAsync(user);
+            var result = true;//_authInService.SignInUserAsync(user);
             if (result)
             {
                 return Ok(result);   
@@ -98,6 +99,27 @@ public class AuthController(IConfiguration configuration) : ControllerBase
         }
 
         return Unauthorized();
+    }
+    #endregion
+
+    #region SignUp
+    [Route("/signup")]
+    [HttpPost]
+    public async Task<IActionResult> SignUp(UserDto user)
+    {
+        if (ModelState.IsValid)
+        {
+            // Create a service for the following logic:
+            var result = true;//_authService.SignUpUserAsync(user);
+            if (result)
+            {
+                return Created();
+            }
+            // For example if email wasnt unique:
+            return Conflict();
+        }
+
+        return BadRequest();
     }
     #endregion
 }
