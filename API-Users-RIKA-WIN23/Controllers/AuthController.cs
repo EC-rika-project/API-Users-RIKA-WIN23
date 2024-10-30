@@ -1,6 +1,8 @@
 ﻿using API_Users_RIKA_WIN23.Infrastructure.DTOs;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -77,6 +79,25 @@ public class AuthController(IConfiguration configuration) : ControllerBase
         {
             return BadRequest(ex.Message);
         }
+    }
+    #endregion
+
+    #region SignIn
+    [Route("/signin")]
+    [HttpGet]
+    public async Task<IActionResult> SignIn(UserDto user)
+    {
+        if (ModelState.IsValid)
+        {
+            // Create a service for the following logic:
+            var result = true;//_signInService.SignInUserAsync(user);
+            if (result)
+            {
+                return Ok(result);   
+            }
+        }
+
+        return Unauthorized();
     }
     #endregion
 }
