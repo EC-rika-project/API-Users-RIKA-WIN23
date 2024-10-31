@@ -20,7 +20,9 @@ builder.Services.AddDefaultIdentity<UserEntity>(x =>
 })
 .AddEntityFrameworkStores<DataContext>();
 
+builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<AuthService>();
+
 
 var app = builder.Build();
 

@@ -11,7 +11,7 @@ public class UserProfileEntity
     [ForeignKey("UserId")]
     public string UserId { get; set; } = null!;
 
-    public UserEntity User { get; set; } = new();
+    public UserEntity? User { get; set; }
 
     [Required]
     [DataType(DataType.EmailAddress)]
