@@ -1,5 +1,6 @@
 ﻿using API_Users_RIKA_WIN23.Infrastructure.DTOs;
 using API_Users_RIKA_WIN23.Infrastructure.Services;
+using API_Users_RIKA_WIN23.Infrastructure.Utilities;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +14,11 @@ namespace API_Users_RIKA_WIN23.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthController(IConfiguration configuration, AuthService authService) : ControllerBase
+public class AuthController(IConfiguration configuration, AuthService authService, StatusCodeSelector statusCodeSelector) : ControllerBase
 {
     private readonly IConfiguration _configuration = configuration;
     private readonly AuthService _authService = authService;
+    private readonly StatusCodeSelector _statusCodeSelector = statusCodeSelector;
 
     #region Token Authentication
     [HttpPost]
@@ -113,12 +115,8 @@ public class AuthController(IConfiguration configuration, AuthService authServic
         {
             // Create a service for the following logic:
             var result = await _authService.SignUpUserAsync(user);
-            if (result)
-            {
-                return Created();
-            }
-            //For example if email wasnt unique:
-            return Conflict();
+
+            return _statusCodeSelector.StatusSelector(result);
         }
 
         return BadRequest();
