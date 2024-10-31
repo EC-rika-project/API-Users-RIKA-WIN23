@@ -1,8 +1,10 @@
 ﻿using API_Users_RIKA_WIN23.Infrastructure.Context;
+using API_Users_RIKA_WIN23.Infrastructure.DTOs;
 using API_Users_RIKA_WIN23.Infrastructure.Entities;
 using API_Users_RIKA_WIN23.Infrastructure.Factories;
 using API_Users_RIKA_WIN23.Infrastructure.Utilities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,8 +43,35 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Services
                 return ResponseFactory.InternalServerError($"Failed to save user profile: {ex.Message}");
             }         
 
+        }
+        #endregion
 
+        public async Task<ResponseResult> GetUserProfileAsync(string Id)
+        {
+            try
+            {
+                var result = await _context.Profiles.FirstOrDefaultAsync(x => x.UserId == Id);
+                if (result == null)
+                {
+                    return ResponseFactory.NotFound();
+                }
+
+                var userProfileDto = new UserProfileDto
+                {
+                    Email = result.Email,
+                    FirstName = result.FirstName,
+                    LastName = result.LastName,
+                    ProfileImageUrl = result.ProfileImageUrl,
+                    Gender = result.Gender,
+                    Age = result.Age,
+                };
+                return ResponseFactory.Ok(userProfileDto);
+            }
+            catch (Exception ex)
+            {
+                return ResponseFactory.InternalServerError($"Failed to fetch user profile: {ex.Message}");
+            }
+            
         }
     }
-    #endregion
 }

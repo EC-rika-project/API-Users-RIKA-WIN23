@@ -112,10 +112,8 @@ public class AuthController(IConfiguration configuration, AuthService authServic
     public async Task<IActionResult> SignUp(SignUpDto user)
     {
         if (ModelState.IsValid)
-        {
-            // Create a service for the following logic:
+        {            
             var result = await _authService.SignUpUserAsync(user);
-
             return _statusCodeSelector.StatusSelector(result);
         }
 
