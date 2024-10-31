@@ -10,7 +10,7 @@ public class UserProfileDto
     [ForeignKey("UserId")]
     public string UserId { get; set; } = null!;
 
-    public UserDto User { get; set; } = new();
+    public UserDto? User { get; set; } 
 
     [Required]
     [DataType(DataType.EmailAddress)]
