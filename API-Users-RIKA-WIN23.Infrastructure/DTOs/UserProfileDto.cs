@@ -10,8 +10,6 @@ public class UserProfileDto
     [ForeignKey("UserId")]
     public string UserId { get; set; } = null!;
 
-    public UserDto? User { get; set; } 
-
     [Required]
     [DataType(DataType.EmailAddress)]
     [RegularExpression(@"^\w+([-+.']\w+)@\w+([-.]\w+).\w{2,}$", ErrorMessage = "Email Or Password Invalid")]
@@ -24,7 +22,7 @@ public class UserProfileDto
     public string? LastName { get; set; }
 
     [ProtectedPersonalData]
-    public string ProfileImageUrl { get; set; } = "defaultUrl()";
+    public string? ProfileImageUrl { get; set; }
 
     [ProtectedPersonalData]
     public string? Gender { get; set; }

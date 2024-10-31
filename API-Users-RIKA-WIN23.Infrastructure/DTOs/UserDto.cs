@@ -2,8 +2,9 @@
 
 namespace API_Users_RIKA_WIN23.Infrastructure.DTOs;
 
-public class UserDto : IdentityUser
+public class UserDto
 {
+    public string UserName { get; set; } = null!;
     public bool IsExternalAccount { get; set; } = false;
 
     public UserProfileDto? Profile { get; set; }
