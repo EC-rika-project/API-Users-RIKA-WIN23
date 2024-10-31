@@ -1,6 +1,7 @@
 using API_Users_RIKA_WIN23.Infrastructure.Context;
 using API_Users_RIKA_WIN23.Infrastructure.Entities;
 using API_Users_RIKA_WIN23.Infrastructure.Services;
+using API_Users_RIKA_WIN23.Infrastructure.Utilities;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,7 @@ builder.Services.AddDefaultIdentity<UserEntity>(x =>
 
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<StatusCodeSelector>();
 
 
 var app = builder.Build();
