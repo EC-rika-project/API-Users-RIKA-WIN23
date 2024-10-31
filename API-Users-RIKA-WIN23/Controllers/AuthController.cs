@@ -113,12 +113,8 @@ public class AuthController(IConfiguration configuration, AuthService authServic
         {
             // Create a service for the following logic:
             var result = await _authService.SignUpUserAsync(user);
-            if (result)
-            {
-                return Created();
-            }
-            //For example if email wasnt unique:
-            return Conflict();
+
+            return result;
         }
 
         return BadRequest();

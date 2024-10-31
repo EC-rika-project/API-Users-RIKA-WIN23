@@ -1,14 +1,17 @@
 ﻿using API_Users_RIKA_WIN23.Infrastructure.DTOs;
 using API_Users_RIKA_WIN23.Infrastructure.Entities;
+using API_Users_RIKA_WIN23.Infrastructure.Factories;
+using API_Users_RIKA_WIN23.Infrastructure.Utilities;
 using Microsoft.AspNetCore.Identity;
 using System.Diagnostics;
 
 namespace API_Users_RIKA_WIN23.Infrastructure.Services;
 
-public class AuthService(SignInManager<UserEntity> signInManager, UserManager<UserEntity> userManager)
+public class AuthService(SignInManager<UserEntity> signInManager, UserManager<UserEntity> userManager, AccountService accountService)
 {
     private readonly SignInManager<UserEntity> _signInManager = signInManager;
     private readonly UserManager<UserEntity> _userManager = userManager;
+    private readonly AccountService _accountService = accountService;
 
     public async Task<UserDto> SignInUserAsync(SignInDto user)
     {
@@ -31,7 +34,7 @@ public class AuthService(SignInManager<UserEntity> signInManager, UserManager<Us
         return null!;
     }
 
-    public async Task<bool> SignUpUserAsync(SignUpDto user)
+    public async Task<ResponseResult> SignUpUserAsync(SignUpDto user)
     {
         try
         {
@@ -41,7 +44,7 @@ public class AuthService(SignInManager<UserEntity> signInManager, UserManager<Us
                 var existingUser = await _userManager.FindByEmailAsync(user.Email);
                 if (existingUser != null)
                 {
-                    return false;
+                    return ResponseFactory.Exists("Email is already in use");
                 }
 
                 //Create a UserFactory for conversion
@@ -54,15 +57,20 @@ public class AuthService(SignInManager<UserEntity> signInManager, UserManager<Us
                 var result = await _userManager.CreateAsync(entity, user.Password);
                 if (result.Succeeded)
                 {
-
-                    return true;
+                    var profile = await _accountService.CreateUserProfileAsync(user.Email);
+                    if (profile.StatusCode == StatusCode.CREATED)
+                    {
+                        return profile;
+                    }
+                    return ResponseFactory.Created("User is created but an error occurred when creating profile");
                 }
+
             }
         }
         catch (Exception ex)
         {
             Debug.WriteLine(ex.Message);
         }
-        return false;
+        return ResponseFactory.InternalServerError();
     }
 }

@@ -16,7 +16,7 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Services
         private readonly UserManager<UserEntity> _userManager = userManager;
         private readonly DataContext _context = context;
 
-        public async Task<ResponseResult> CreateUserProfileASync(string userEmail)
+        public async Task<ResponseResult> CreateUserProfileAsync(string userEmail)
         {
             var user = await _userManager.FindByEmailAsync(userEmail);
             if (user == null)
