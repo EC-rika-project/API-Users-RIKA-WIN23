@@ -1,4 +1,6 @@
-﻿using API_Users_RIKA_WIN23.Infrastructure.Services;
+﻿using API_Users_RIKA_WIN23.Infrastructure.DTOs;
+using API_Users_RIKA_WIN23.Infrastructure.Entities;
+using API_Users_RIKA_WIN23.Infrastructure.Services;
 using API_Users_RIKA_WIN23.Infrastructure.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +22,19 @@ namespace API_Users_RIKA_WIN23.Controllers
             {
                 var result = await _accountService.GetUserProfileAsync(Id);
                 return _statusCodeSelector.StatusSelector(result);
+            }
+            return BadRequest();
+        }
+
+        [Route ("/api/updateuserprofile")]
+        [HttpPut]
+        public async Task<IActionResult> UpdateUserProfileAsync(UserProfileDto dto)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _accountService.UpdateUserProfileAsync(dto);
+                //return _statusCodeSelector.StatusSelector(result);
+                return Ok();
             }
             return BadRequest();
         }

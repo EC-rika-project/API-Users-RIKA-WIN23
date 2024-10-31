@@ -30,6 +30,7 @@ public class UserProfileFactory
         return new UserProfileEntity
         {   
             UserId = dto.UserId,
+            User = new UserEntity(),
             Email = dto.Email,
             FirstName = dto.FirstName,
             LastName = dto.LastName,

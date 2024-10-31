@@ -3,8 +3,10 @@ using API_Users_RIKA_WIN23.Infrastructure.DTOs;
 using API_Users_RIKA_WIN23.Infrastructure.Entities;
 using API_Users_RIKA_WIN23.Infrastructure.Factories;
 using API_Users_RIKA_WIN23.Infrastructure.Utilities;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.JSInterop.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,6 +48,7 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Services
         }
         #endregion
 
+        #region GetProfile
         public async Task<ResponseResult> GetUserProfileAsync(string Id)
         {
             try
@@ -56,15 +59,8 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Services
                     return ResponseFactory.NotFound();
                 }
 
-                var userProfileDto = new UserProfileDto
-                {
-                    Email = result.Email,
-                    FirstName = result.FirstName,
-                    LastName = result.LastName,
-                    ProfileImageUrl = result.ProfileImageUrl,
-                    Gender = result.Gender,
-                    Age = result.Age,
-                };
+                var userProfileDto = UserProfileFactory.Create(result);
+
                 return ResponseFactory.Ok(userProfileDto);
             }
             catch (Exception ex)
@@ -72,6 +68,36 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Services
                 return ResponseFactory.InternalServerError($"Failed to fetch user profile: {ex.Message}");
             }
             
+        }
+        #endregion
+
+        // Get all users? 
+
+        public async Task<ResponseResult> UpdateUserProfileAsync(UserProfileDto updatedDto)
+        {
+            try
+            {
+                var userProfile = await _context.Profiles.FirstOrDefaultAsync(x => x.UserId == updatedDto.UserId);
+                var user = await _userManager.FindByIdAsync(updatedDto.UserId);
+
+                if (userProfile == null || user == null)
+                {
+                    return ResponseFactory.NotFound();
+                }
+
+                var updatedProfile = UserProfileFactory.Create(updatedDto);
+                updatedProfile.User = user;
+                _context.Profiles.Entry(userProfile).CurrentValues.SetValues(updatedProfile);
+                await _context.SaveChangesAsync();
+        
+                return ResponseFactory.Ok(updatedProfile);
+            }
+            
+            catch (Exception ex)
+            {
+                return ResponseFactory.InternalServerError($"Failed to update user profile: {ex.Message}");
+            }
+        
         }
     }
 }
