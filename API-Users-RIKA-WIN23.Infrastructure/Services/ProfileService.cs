@@ -13,7 +13,7 @@ public class ProfileService(UserManager<UserEntity> userManager, DataContext con
     private readonly UserManager<UserEntity> _userManager = userManager;
     private readonly DataContext _context = context;
 
-    #region Create Profile
+    #region Create
     /// <summary>
     /// When a new User is created this method is automatically called on.
     /// </summary>
@@ -90,7 +90,7 @@ public class ProfileService(UserManager<UserEntity> userManager, DataContext con
 
     #endregion
 
-    #region Get Profile
+    #region Read
     public async Task<ResponseResult> GetUserProfileAsync(string id)
     {
         try
@@ -115,7 +115,7 @@ public class ProfileService(UserManager<UserEntity> userManager, DataContext con
 
     // Get all users? 
 
-    #region Update Profile
+    #region Update
     public async Task<ResponseResult> UpdateUserProfileAsync(UserProfileDto updatedDto)
     {
         try
@@ -144,7 +144,7 @@ public class ProfileService(UserManager<UserEntity> userManager, DataContext con
     }
     #endregion
 
-    #region Delete Profile
+    #region Delete
     public async Task<ResponseResult> DeleteUserProfileAsync(string id)
     {
         try

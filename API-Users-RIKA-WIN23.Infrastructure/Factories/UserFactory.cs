@@ -9,6 +9,7 @@ public class UserFactory
     {
         return new UserEntity
         {
+            Id = dto.Id,
             IsExternalAccount = dto.IsExternalAccount,
             Profile = UserProfileFactory.Create(dto.Profile!),
             Address = AddressFactory.Create(dto.Address!),
@@ -21,12 +22,24 @@ public class UserFactory
     {
         return new UserDto
         {
-            UserName = entity.UserName!,
+            Id = entity.Id,
             IsExternalAccount = entity.IsExternalAccount,
             Profile = UserProfileFactory.Create(entity.Profile!),
             Address = AddressFactory.Create(entity.Address!),
             WishList = WishListFactory.Create(entity.WishList!),
             ShoppingCarts = ShoppingCartFactory.Create(entity.ShoppingCarts!),
         };
+    }
+
+    public static IEnumerable<UserDto> Create(List<UserEntity> entities)
+    {
+        var dtos = new List<UserDto>();
+
+        foreach(var entity in entities)
+        {
+            dtos.Add(Create(entity));
+        }
+
+        return dtos;
     }
 }

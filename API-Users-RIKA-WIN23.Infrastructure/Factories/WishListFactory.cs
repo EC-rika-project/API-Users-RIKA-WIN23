@@ -20,6 +20,10 @@ public class WishListFactory
 
     public static UserWishListEntity Create(UserWishListDto dto)
     {
+        if (dto == null)
+        {
+            return null!;
+        }
         return new UserWishListEntity
         {
             UserID = dto.UserID,

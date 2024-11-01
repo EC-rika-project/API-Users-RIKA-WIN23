@@ -21,74 +21,75 @@ public class AuthController(IConfiguration configuration, AuthService authServic
     private readonly StatusCodeGenerator _statusCodeSelector = statusCodeSelector;
 
     #region Token Authentication
+    [Route("/api/JWT")]
     [HttpPost]
-    public IActionResult GetToken(string role, UserDto? user)
-    {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
+    //public IActionResult GetToken(string role, UserDto? user)
+    //{
+    //    if (!ModelState.IsValid)
+    //    {
+    //        return BadRequest(ModelState);
+    //    }
 
-        if (user == null || string.IsNullOrWhiteSpace(user.UserName))
-        {
-            return BadRequest("Invalid user data.");
-        }
+    //    if (user == null || string.IsNullOrWhiteSpace(user.UserName))
+    //    {
+    //        return BadRequest("Invalid user data.");
+    //    }
 
-        try
-        {
-            var claims = new List<Claim>();
+    //    try
+    //    {
+    //        var claims = new List<Claim>();
 
-            switch (role)
-            {
-                case "Admin":
-                    claims = new()
-                    {
-                        new Claim(ClaimTypes.Name, user.UserName),
-                        new Claim(ClaimTypes.Role, $"{role}"),
-                        new Claim("Permission", "CanEditAllUsers")
-                    };
-                    break;
-                case "User":
-                    claims = new()
-                    {
-                        new Claim(ClaimTypes.Name, user.UserName),
-                        new Claim(ClaimTypes.Role, $"{role}"),
-                        new Claim("Permission", "CanEditSelf")
-                    };
-                    break;
-                default:
-                    claims = new()
-                    {
-                        new Claim(ClaimTypes.Name, "Guest"),
-                        new Claim(ClaimTypes.Role, "Guest"),
-                        new Claim("Permission", "CanNotEdit")
-                    };
-                    break;
-            }
+    //        switch (role)
+    //        {
+    //            case "Admin":
+    //                claims = new()
+    //                {
+    //                    new Claim(ClaimTypes.Name, user.UserName),
+    //                    new Claim(ClaimTypes.Role, $"{role}"),
+    //                    new Claim("Permission", "CanEditAllUsers")
+    //                };
+    //                break;
+    //            case "User":
+    //                claims = new()
+    //                {
+    //                    new Claim(ClaimTypes.Name, user.UserName),
+    //                    new Claim(ClaimTypes.Role, $"{role}"),
+    //                    new Claim("Permission", "CanEditSelf")
+    //                };
+    //                break;
+    //            default:
+    //                claims = new()
+    //                {
+    //                    new Claim(ClaimTypes.Name, "Guest"),
+    //                    new Claim(ClaimTypes.Role, "Guest"),
+    //                    new Claim("Permission", "CanNotEdit")
+    //                };
+    //                break;
+    //        }
 
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                Issuer = _configuration["JWT:Issuer"],
-                Audience = _configuration["JWT:Audience_DEV"],
-                Expires = DateTime.Now.AddMinutes(30),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration[$"JWT:{role}"]!)), SecurityAlgorithms.HmacSha512),
-            };
+    //        var tokenHandler = new JwtSecurityTokenHandler();
+    //        var tokenDescriptor = new SecurityTokenDescriptor
+    //        {
+    //            Subject = new ClaimsIdentity(claims),
+    //            Issuer = _configuration["JWT:Issuer"],
+    //            Audience = _configuration["JWT:Audience_DEV"],
+    //            Expires = DateTime.Now.AddMinutes(30),
+    //            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration[$"JWT:{role}"]!)), SecurityAlgorithms.HmacSha512),
+    //        };
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return Ok(tokenHandler.WriteToken(token));
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
+    //        var token = tokenHandler.CreateToken(tokenDescriptor);
+    //        return Ok(tokenHandler.WriteToken(token));
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return BadRequest(ex.Message);
+    //    }
+    //}
     #endregion
 
     #region SignIn
-    [Route("/api/signin")]
+    [Route("/api/SignIn")]
     [HttpPost]
     public async Task<IActionResult> SignIn(SignInDto user)
     {
@@ -102,12 +103,12 @@ public class AuthController(IConfiguration configuration, AuthService authServic
             }
         }
 
-        return Unauthorized();
+        return BadRequest();
     }
     #endregion
 
     #region SignUp
-    [Route("/api/signup")]
+    [Route("/api/SignUp")]
     [HttpPost]
     public async Task<IActionResult> SignUp(SignUpDto user)
     {

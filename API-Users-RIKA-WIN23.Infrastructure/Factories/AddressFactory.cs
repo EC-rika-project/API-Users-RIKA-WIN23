@@ -23,6 +23,10 @@ public class AddressFactory
     }
     public static UserAddressEntity Create(UserAddressDto dto)
     {
+        if (dto == null)
+        {
+            return null!;
+        }
         return new UserAddressEntity
         {
             UserId = dto.UserId,           
