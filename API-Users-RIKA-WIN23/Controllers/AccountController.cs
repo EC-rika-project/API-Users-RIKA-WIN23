@@ -33,8 +33,7 @@ namespace API_Users_RIKA_WIN23.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _accountService.UpdateUserProfileAsync(dto);
-                //return _statusCodeSelector.StatusSelector(result);
-                return Ok();
+                return _statusCodeSelector.StatusSelector(result);
             }
             return BadRequest();
         }

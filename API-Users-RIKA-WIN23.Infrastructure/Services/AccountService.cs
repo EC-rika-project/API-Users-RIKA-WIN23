@@ -90,7 +90,7 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Services
                 _context.Profiles.Entry(userProfile).CurrentValues.SetValues(updatedProfile);
                 await _context.SaveChangesAsync();
         
-                return ResponseFactory.Ok(updatedProfile);
+                return ResponseFactory.Ok(UserProfileFactory.Create(updatedProfile));
             }
             
             catch (Exception ex)
