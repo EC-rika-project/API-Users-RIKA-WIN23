@@ -7,11 +7,12 @@ using System.Diagnostics;
 
 namespace API_Users_RIKA_WIN23.Infrastructure.Services;
 
-public class AuthService(SignInManager<UserEntity> signInManager, UserManager<UserEntity> userManager, AccountService accountService)
+public class AuthService(SignInManager<UserEntity> signInManager, UserManager<UserEntity> userManager, AccountService accountService, ProfileService profileService)
 {
     private readonly SignInManager<UserEntity> _signInManager = signInManager;
     private readonly UserManager<UserEntity> _userManager = userManager;
     private readonly AccountService _accountService = accountService;
+    private readonly ProfileService _profileService = profileService;
 
     public async Task<UserDto> SignInUserAsync(SignInDto user)
     {
@@ -34,14 +35,14 @@ public class AuthService(SignInManager<UserEntity> signInManager, UserManager<Us
         return null!;
     }
 
-    public async Task<ResponseResult> SignUpUserAsync(SignUpDto user)
+    public async Task<ResponseResult> SignUpUserAsync(SignUpDto newUser)
     {
         try
         {
-            if (user != null)
+            if (newUser != null)
             {
                 //Checks for a user with the supplied email, returns false.
-                var existingUser = await _userManager.FindByEmailAsync(user.Email);
+                var existingUser = await _userManager.FindByEmailAsync(newUser.Email);
                 if (existingUser != null)
                 {
                     return ResponseFactory.Exists("Email is already in use");
@@ -50,14 +51,14 @@ public class AuthService(SignInManager<UserEntity> signInManager, UserManager<Us
                 //Create a UserFactory for conversion
                 var entity = new UserEntity()
                 {
-                    Email = user.Email,
-                    UserName = user.Email,
+                    Email = newUser.Email,
+                    UserName = newUser.Email,
                 };
 
-                var result = await _userManager.CreateAsync(entity, user.Password);
+                var result = await _userManager.CreateAsync(entity, newUser.Password);
                 if (result.Succeeded)
                 {
-                    var profile = await _accountService.CreateUserProfileAsync(user.Email);
+                    var profile = await _profileService.CreateUserProfileAsync(newUser);
                     if (profile.StatusCode == StatusCode.CREATED)
                     {
                         return profile;

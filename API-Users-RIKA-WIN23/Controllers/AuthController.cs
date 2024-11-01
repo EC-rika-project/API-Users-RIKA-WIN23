@@ -14,11 +14,11 @@ namespace API_Users_RIKA_WIN23.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthController(IConfiguration configuration, AuthService authService, StatusCodeSelector statusCodeSelector) : ControllerBase
+public class AuthController(IConfiguration configuration, AuthService authService, StatusCodeGenerator statusCodeSelector) : ControllerBase
 {
     private readonly IConfiguration _configuration = configuration;
     private readonly AuthService _authService = authService;
-    private readonly StatusCodeSelector _statusCodeSelector = statusCodeSelector;
+    private readonly StatusCodeGenerator _statusCodeSelector = statusCodeSelector;
 
     #region Token Authentication
     [HttpPost]
@@ -114,7 +114,7 @@ public class AuthController(IConfiguration configuration, AuthService authServic
         if (ModelState.IsValid)
         {            
             var result = await _authService.SignUpUserAsync(user);
-            return _statusCodeSelector.StatusSelector(result);
+            return _statusCodeSelector.HttpSelector(result);
         }
 
         return BadRequest();

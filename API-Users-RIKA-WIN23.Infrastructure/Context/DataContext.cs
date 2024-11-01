@@ -21,7 +21,7 @@ public class DataContext(DbContextOptions<DataContext> options) : IdentityDbCont
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        base.OnModelCreating(builder);
+        base.OnModelCreating(builder);         
 
         builder.Entity<UserProfileEntity>()
             .HasOne(x => x.User)
@@ -34,6 +34,10 @@ public class DataContext(DbContextOptions<DataContext> options) : IdentityDbCont
         builder.Entity<UserProfileEntity>()       
             .HasIndex(x => x.Email)
             .IsUnique();
+
+        builder.Entity<UserShoppingCartEntity>()
+            .HasOne(x => x.User)
+            .WithMany(x => x.ShoppingCarts);
 
         builder.Entity<UserShoppingCartEntity>()
             .HasMany(x => x.Products)

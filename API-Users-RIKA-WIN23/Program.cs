@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Configuration.AddUserSecrets<Program>();
 
 builder.Services.AddDbContext<DataContext>(x =>
     x.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
@@ -23,7 +24,7 @@ builder.Services.AddDefaultIdentity<UserEntity>(x =>
 
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<AuthService>();
-builder.Services.AddScoped<StatusCodeSelector>();
+builder.Services.AddScoped<StatusCodeGenerator>();
 
 
 var app = builder.Build();

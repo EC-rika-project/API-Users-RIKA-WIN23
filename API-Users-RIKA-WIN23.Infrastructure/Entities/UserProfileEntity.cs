@@ -15,7 +15,7 @@ public class UserProfileEntity
 
     [Required]
     [DataType(DataType.EmailAddress)]
-    [RegularExpression(@"^\w+([-+.']\w+)@\w+([-.]\w+).\w{2,}$", ErrorMessage = "Email Or Password Invalid")]
+    [RegularExpression(@"^\w+([-+.']\w+)@\w+([-.]\w+).\w{2,}$", ErrorMessage = "Email Invalid")]
     public string Email { get; set; } = null!;
 
     [ProtectedPersonalData]

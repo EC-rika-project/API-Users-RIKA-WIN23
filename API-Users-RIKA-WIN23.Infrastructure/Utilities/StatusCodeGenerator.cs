@@ -3,14 +3,14 @@
 
 namespace API_Users_RIKA_WIN23.Infrastructure.Utilities;
 
-public class StatusCodeSelector : ControllerBase
+public class StatusCodeGenerator : ControllerBase
 {
     /// <summary>
     /// Genereates a http Statusmessage from correspponding ResponseResult.
     /// </summary>
     /// <param name="response"></param>
     /// <returns></returns>
-    public IActionResult StatusSelector(ResponseResult response)
+    public IActionResult HttpSelector(ResponseResult response)
     {
         switch (response.StatusCode)
         {

@@ -11,5 +11,5 @@ public class UserWishListEntity
 
     public UserEntity User { get; set; } = new();
 
-    public IEnumerable<string> ProductIDs { get; set; } = new List<string>();
+    public List<string> ProductIDs { get; set; } = new List<string>();
 }

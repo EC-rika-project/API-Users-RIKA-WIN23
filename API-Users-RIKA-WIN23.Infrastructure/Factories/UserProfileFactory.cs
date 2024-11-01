@@ -7,6 +7,10 @@ public class UserProfileFactory
 {
     public static UserProfileDto Create(UserProfileEntity entity)
     {
+        if (entity == null)
+        {
+            return null!;
+        }
         return new UserProfileDto
         {
             UserId = entity.UserId,
@@ -30,6 +34,7 @@ public class UserProfileFactory
         return new UserProfileEntity
         {   
             UserId = dto.UserId,
+            User = new UserEntity(),
             Email = dto.Email,
             FirstName = dto.FirstName,
             LastName = dto.LastName,

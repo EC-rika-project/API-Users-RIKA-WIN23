@@ -1,28 +1,29 @@
 ﻿using API_Users_RIKA_WIN23.Infrastructure.Services;
 using API_Users_RIKA_WIN23.Infrastructure.Utilities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_Users_RIKA_WIN23.Controllers
 {
+    // Create DataAnnotation for APIkey in initialize here.
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController(StatusCodeSelector statusCodeSelector, AccountService accountService) : ControllerBase
+    public class AccountController(StatusCodeGenerator statusCodeSelector, AccountService accountService) : ControllerBase
     {
-        private readonly StatusCodeSelector _statusCodeSelector = statusCodeSelector;
+        private readonly StatusCodeGenerator _statusCodeGenerator = statusCodeSelector;
         private readonly AccountService _accountService = accountService;
 
-        [Route ("/api/getuserprofile")]
+        #region User Endpoints
         [HttpGet]
-        public async Task<IActionResult> GetUserProfileAsync(string Id)
+        public async Task<IActionResult> GetUserAsync(string id)
         {
-            if (ModelState.IsValid)
+            if (id != null)
             {
-                var result = await _accountService.GetUserProfileAsync(Id);
-                return _statusCodeSelector.StatusSelector(result);
+                var result = await _accountService.GetOneUserAsync(id);
+                return _statusCodeGenerator.HttpSelector(result);
             }
+
             return BadRequest();
         }
-
+        #endregion
     }
 }
