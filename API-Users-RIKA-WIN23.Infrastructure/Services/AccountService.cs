@@ -3,15 +3,9 @@ using API_Users_RIKA_WIN23.Infrastructure.DTOs;
 using API_Users_RIKA_WIN23.Infrastructure.Entities;
 using API_Users_RIKA_WIN23.Infrastructure.Factories;
 using API_Users_RIKA_WIN23.Infrastructure.Utilities;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.JSInterop.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace API_Users_RIKA_WIN23.Infrastructure.Services
 {
@@ -20,13 +14,19 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Services
         private readonly UserManager<UserEntity> _userManager = userManager;
         private readonly DataContext _context = context;
 
-        #region CreateUserProfile
-        public async Task<ResponseResult> CreateUserProfileAsync(string userEmail)
+        #region Create Profile
+        public async Task<ResponseResult> CreateUserProfileAsync(string email)
         {
-            var user = await _userManager.FindByEmailAsync(userEmail);
+            var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
             {
                 return ResponseFactory.NotFound();
+            }
+
+            var existingProfile = await _context.Profiles.FirstOrDefaultAsync(x => x.Email == user.Email || x.UserId == user.Id);
+            if (existingProfile != null)
+            {
+                return ResponseFactory.Exists("User profile already exists in database.");
             }
 
             var userProfile = new UserProfileEntity
@@ -38,7 +38,7 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Services
             {
                 _context.Profiles.Add(userProfile);
                 await _context.SaveChangesAsync();
-                return ResponseFactory.Created();
+                return ResponseFactory.Created("User profile created.");
             }
             catch (Exception ex)
             {
@@ -48,12 +48,12 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Services
         }
         #endregion
 
-        #region GetProfile
-        public async Task<ResponseResult> GetUserProfileAsync(string Id)
+        #region Get Profile
+        public async Task<ResponseResult> GetUserProfileAsync(string id)
         {
             try
             {
-                var result = await _context.Profiles.FirstOrDefaultAsync(x => x.UserId == Id);
+                var result = await _context.Profiles.FirstOrDefaultAsync(x => x.UserId == id);
                 if (result == null)
                 {
                     return ResponseFactory.NotFound();
@@ -73,6 +73,7 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Services
 
         // Get all users? 
 
+        #region Update Profile
         public async Task<ResponseResult> UpdateUserProfileAsync(UserProfileDto updatedDto)
         {
             try
@@ -90,7 +91,7 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Services
                 _context.Profiles.Entry(userProfile).CurrentValues.SetValues(updatedProfile);
                 await _context.SaveChangesAsync();
         
-                return ResponseFactory.Ok(UserProfileFactory.Create(updatedProfile));
+                return ResponseFactory.Ok(UserProfileFactory.Create(updatedProfile), "User profile updated.");
             }
             
             catch (Exception ex)
@@ -99,5 +100,46 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Services
             }
         
         }
+        #endregion
+
+        #region Delete Profile
+        public async Task<ResponseResult> DeleteUserProfileAsync(string id)
+        {
+            try
+            {
+                var userProfile = await _context.Profiles.FirstOrDefaultAsync(x => x.UserId == id);
+                if (userProfile == null)
+                {
+                    return ResponseFactory.NotFound();
+                }
+
+                _context.Profiles.Remove(userProfile);
+                await _context.SaveChangesAsync();
+                return ResponseFactory.Ok("User profile deleted.");
+            }
+            catch (Exception ex)
+            {
+                return ResponseFactory.InternalServerError($"Failed to delete user profile: {ex.Message}");
+            }
+        }
+
+        public async Task<ResponseResult> GetOneUserAsync(string id)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(id);
+                if (user == null)
+                {
+                    return ResponseFactory.NotFound("There is no user with the submitted Id in database.");
+                }
+
+                return ResponseFactory.Ok(UserFactory.Create(user));
+            }
+            catch (Exception ex)
+            {
+                return ResponseFactory.InternalServerError($"Failed to get user: {ex.Message}");
+            }
+        }
+        #endregion
     }
 }

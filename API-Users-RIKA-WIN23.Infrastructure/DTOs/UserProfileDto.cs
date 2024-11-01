@@ -12,7 +12,7 @@ public class UserProfileDto
 
     [Required]
     [DataType(DataType.EmailAddress)]
-    //[RegularExpression(@"^\w+([-+.']\w+)@\w+([-.]\w+).\w{2,}$", ErrorMessage = "Email Invalid")]
+    [RegularExpression(@"^\w+([-+.']\w+)@\w+([-.]\w+).\w{2,}$", ErrorMessage = "Email Invalid")]
     public string Email { get; set; } = null!;
 
     [ProtectedPersonalData]
