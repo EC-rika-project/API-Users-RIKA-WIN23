@@ -24,6 +24,7 @@ builder.Services.AddDefaultIdentity<UserEntity>(x =>
 
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<ProfileService>();
 builder.Services.AddScoped<StatusCodeGenerator>();
 
 
