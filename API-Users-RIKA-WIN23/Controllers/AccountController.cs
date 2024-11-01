@@ -14,11 +14,11 @@ namespace API_Users_RIKA_WIN23.Controllers
 
         #region User Endpoints
         [HttpGet]
-        public async Task<IActionResult> GetUserAsync(string id)
+        public async Task<IActionResult> GetUserAsync(string email)
         {
-            if (id != null)
+            if (email != null)
             {
-                var result = await _accountService.GetOneUserAsync(id);
+                var result = await _accountService.GetOneUserAsync(email);
                 return _statusCodeGenerator.HttpSelector(result);
             }
 
