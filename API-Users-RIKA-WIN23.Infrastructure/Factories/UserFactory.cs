@@ -10,10 +10,10 @@ public class UserFactory
         return new UserEntity
         {
             IsExternalAccount = dto.IsExternalAccount,
-            Profile = UserProfileFactory.Create(dto.Profile!) ?? null,
-            Address = AddressFactory.Create(dto.Address!) ?? null,
-            WishList = WishListFactory.Create(dto.WishList!) ?? null,
-            ShoppingCarts = ShoppingCartFactory.Create(dto.ShoppingCarts!) ?? null,
+            Profile = UserProfileFactory.Create(dto.Profile!),
+            Address = AddressFactory.Create(dto.Address!),
+            WishList = WishListFactory.Create(dto.WishList!),
+            ShoppingCarts = ShoppingCartFactory.Create(dto.ShoppingCarts!),
         };
     }
 
@@ -21,11 +21,12 @@ public class UserFactory
     {
         return new UserDto
         {
+            UserName = entity.UserName!,
             IsExternalAccount = entity.IsExternalAccount,
-            Profile = UserProfileFactory.Create(entity.Profile!) ?? null,
-            Address = AddressFactory.Create(entity.Address!) ?? null,
-            WishList = WishListFactory.Create(entity.WishList!) ?? null,
-            ShoppingCarts = ShoppingCartFactory.Create(entity.ShoppingCarts!) ?? null,
+            Profile = UserProfileFactory.Create(entity.Profile!),
+            Address = AddressFactory.Create(entity.Address!),
+            WishList = WishListFactory.Create(entity.WishList!),
+            ShoppingCarts = ShoppingCartFactory.Create(entity.ShoppingCarts!),
         };
     }
 }

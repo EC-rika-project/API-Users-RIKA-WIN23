@@ -7,6 +7,10 @@ public class WishListFactory
 {
     public static UserWishListDto Create(UserWishListEntity entity)
     {
+        if (entity == null)
+        {
+            return null!;
+        }
         return new UserWishListDto
         {
             UserID = entity.UserID,

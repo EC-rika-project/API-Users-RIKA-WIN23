@@ -5,6 +5,7 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<RootNamespace>API_Users_RIKA_WIN23</RootNamespace>
+		<UserSecretsId>72b8ef58-2746-44df-b7c5-a613ff078f5b</UserSecretsId>
 	</PropertyGroup>
 
 	<ItemGroup>

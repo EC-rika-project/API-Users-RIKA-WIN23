@@ -7,6 +7,10 @@ public class UserProfileFactory
 {
     public static UserProfileDto Create(UserProfileEntity entity)
     {
+        if (entity == null)
+        {
+            return null!;
+        }
         return new UserProfileDto
         {
             UserId = entity.UserId,

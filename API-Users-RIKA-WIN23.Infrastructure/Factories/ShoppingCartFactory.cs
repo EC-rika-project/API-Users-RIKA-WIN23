@@ -27,6 +27,10 @@ public class ShoppingCartFactory
 
     public static ICollection<UserShoppingCartDto> Create(ICollection<UserShoppingCartEntity> entities)
     {
+        if (entities == null)
+        {
+            return null!;
+        }
         var dtos = new List<UserShoppingCartDto>();
         foreach (var entity in entities)
         {
