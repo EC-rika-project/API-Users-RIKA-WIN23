@@ -16,7 +16,7 @@ public class UserAddressDto
 
     public string? ApartmentNumber { get; set; }
 
-    [RegularExpression("^\\d{3}\\s\\d{2}$", ErrorMessage = "Please enter a valid postal code format (e.g. 123 45).")]
+    [RegularExpression(@"^\d{5}$", ErrorMessage = "PostalCode invalid, please submit 5 digits only.")]
     public int PostalCode { get; set; }
 
     [Required]

@@ -31,10 +31,14 @@ public class UserProfileFactory
     /// <returns></returns>
     public static UserProfileEntity Create(UserProfileDto dto)
     {
+        if (dto == null)
+        {
+            return null!;
+        }
         return new UserProfileEntity
         {   
             UserId = dto.UserId,
-            User = new UserEntity(),
+            //User = new UserEntity(),
             Email = dto.Email,
             FirstName = dto.FirstName,
             LastName = dto.LastName,

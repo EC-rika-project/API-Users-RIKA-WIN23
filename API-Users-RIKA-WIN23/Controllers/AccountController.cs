@@ -1,4 +1,5 @@
-﻿using API_Users_RIKA_WIN23.Infrastructure.Services;
+﻿using API_Users_RIKA_WIN23.Infrastructure.DTOs;
+using API_Users_RIKA_WIN23.Infrastructure.Services;
 using API_Users_RIKA_WIN23.Infrastructure.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,7 +13,12 @@ namespace API_Users_RIKA_WIN23.Controllers
         private readonly StatusCodeGenerator _statusCodeGenerator = statusCodeSelector;
         private readonly AccountService _accountService = accountService;
 
-        #region User Endpoints
+        #region Post
+        //Create endpoint is located in authcontroller as a HttpPost SignUp.
+        #endregion
+
+        #region Get
+        [Route("/api/Account/{email}")]
         [HttpGet]
         public async Task<IActionResult> GetUserAsync(string email)
         {
@@ -23,6 +29,31 @@ namespace API_Users_RIKA_WIN23.Controllers
             }
 
             return BadRequest();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUsersAsync()
+        {
+            var result = await _accountService.GetAllUsersAsync();
+            return _statusCodeGenerator.HttpSelector(result);
+        }
+        #endregion
+
+        #region Put
+        [HttpPut]
+        public async Task<IActionResult> UpdateUserAsync(UserDto updatedUserDto)
+        {
+            var result = await _accountService.UpdateUserAsync(updatedUserDto);
+            return _statusCodeGenerator.HttpSelector(result);
+        }
+        #endregion
+
+        #region Delete
+        [HttpDelete]
+        public async Task<IActionResult> DeleteUserAsync(string id)
+        {
+            var result = await _accountService.DeleteUserAsync(id);
+            return _statusCodeGenerator.HttpSelector(result);
         }
         #endregion
     }

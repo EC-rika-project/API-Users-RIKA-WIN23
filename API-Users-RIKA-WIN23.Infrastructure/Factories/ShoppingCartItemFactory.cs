@@ -7,6 +7,10 @@ public class ShoppingCartItemFactory
 {
     public static ShoppingCartItemDto Create(ShoppingCartItemEntity entity)
     {
+        if (entity == null)
+        {
+            return null!;
+        }
         return new ShoppingCartItemDto
         {
             UserShoppingCartId = entity.UserShoppingCartId,
@@ -18,6 +22,10 @@ public class ShoppingCartItemFactory
 
     public static ShoppingCartItemEntity Create(ShoppingCartItemDto dto)
     {
+        if (dto == null)
+        {
+            return null!;
+        }
         return new ShoppingCartItemEntity
         {
             UserShoppingCartId = dto.UserShoppingCartId,
@@ -29,6 +37,10 @@ public class ShoppingCartItemFactory
 
     public static ICollection<ShoppingCartItemDto> Create(ICollection<ShoppingCartItemEntity> entities)
     {
+        if (entities == null)
+        {
+            return null!;
+        }
         var dtos = new List<ShoppingCartItemDto>();
         foreach (var entity in entities)
         {
@@ -38,12 +50,16 @@ public class ShoppingCartItemFactory
         return dtos;
     }
 
-    public static ICollection<ShoppingCartItemEntity> Create(ICollection<ShoppingCartItemDto> dto)
+    public static ICollection<ShoppingCartItemEntity> Create(ICollection<ShoppingCartItemDto> dtos)
     {
-        var entities = new List<ShoppingCartItemEntity>();
-        foreach (var entity in dto)
+        if (dtos == null)
         {
-            entities.Add(Create(entity));
+            return null!;
+        }
+        var entities = new List<ShoppingCartItemEntity>();
+        foreach (var dto in dtos)
+        {
+            entities.Add(Create(dto));
         }
 
         return entities;

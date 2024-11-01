@@ -7,6 +7,10 @@ public class ShoppingCartFactory
 {
     public static UserShoppingCartDto Create(UserShoppingCartEntity entity)
     {
+        if (entity == null)
+        {
+            return null!;
+        }
         return new UserShoppingCartDto
         {
             Id = entity.Id,
@@ -17,6 +21,10 @@ public class ShoppingCartFactory
 
     public static UserShoppingCartEntity Create(UserShoppingCartDto dto)
     {
+        if (dto == null)
+        {
+            return null!;
+        }
         return new UserShoppingCartEntity
         {
             Id = dto.Id,
@@ -42,6 +50,10 @@ public class ShoppingCartFactory
 
     public static ICollection<UserShoppingCartEntity> Create(ICollection<UserShoppingCartDto> dtos)
     {
+        if (dtos == null)
+        {
+            return null!;
+        }
         var entities = new List<UserShoppingCartEntity>();
         foreach (var dto in dtos)
         {
