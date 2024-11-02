@@ -26,11 +26,11 @@ public class ProfileController(StatusCodeGenerator statusCodeGenerator, ProfileS
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetUserProfileAsync(string Id)
+    public async Task<IActionResult> GetUserProfileAsync(string userId)
     {
         if (ModelState.IsValid)
         {
-            var result = await _profileService.GetUserProfileAsync(Id);
+            var result = await _profileService.GetUserProfileAsync(userId);
             return _statusCodeGenerator.HttpSelector(result);
         }
         return BadRequest();
@@ -49,11 +49,11 @@ public class ProfileController(StatusCodeGenerator statusCodeGenerator, ProfileS
 
     // We should check here for permissions and only let admins access this endpoint.
     [HttpDelete]
-    public async Task<IActionResult> DeleteUserProfileAsync(string id)
+    public async Task<IActionResult> DeleteUserProfileAsync(string userId)
     {
         if (ModelState.IsValid)
         {
-            var result = await _profileService.DeleteUserProfileAsync(id);
+            var result = await _profileService.DeleteUserProfileAsync(userId);
             return _statusCodeGenerator.HttpSelector(result);
         }
         return BadRequest();

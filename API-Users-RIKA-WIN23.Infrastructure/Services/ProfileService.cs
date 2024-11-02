@@ -91,11 +91,11 @@ public class ProfileService(UserManager<UserEntity> userManager, DataContext con
     #endregion
 
     #region Read
-    public async Task<ResponseResult> GetUserProfileAsync(string id)
+    public async Task<ResponseResult> GetUserProfileAsync(string userId)
     {
         try
         {
-            var result = await _context.Profiles.FirstOrDefaultAsync(x => x.UserId == id);
+            var result = await _context.Profiles.FirstOrDefaultAsync(x => x.UserId == userId);
             if (result == null)
             {
                 return ResponseFactory.NotFound();
@@ -145,11 +145,11 @@ public class ProfileService(UserManager<UserEntity> userManager, DataContext con
     #endregion
 
     #region Delete
-    public async Task<ResponseResult> DeleteUserProfileAsync(string id)
+    public async Task<ResponseResult> DeleteUserProfileAsync(string userId)
     {
         try
         {
-            var userProfile = await _context.Profiles.FirstOrDefaultAsync(x => x.UserId == id);
+            var userProfile = await _context.Profiles.FirstOrDefaultAsync(x => x.UserId == userId);
             if (userProfile == null)
             {
                 return ResponseFactory.NotFound();
