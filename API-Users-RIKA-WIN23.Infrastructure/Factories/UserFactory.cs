@@ -23,6 +23,7 @@ public class UserFactory
         return new UserDto
         {
             Id = entity.Id,
+            UserName = entity.UserName,
             IsExternalAccount = entity.IsExternalAccount,
             Profile = UserProfileFactory.Create(entity.Profile!),
             Address = AddressFactory.Create(entity.Address!),
