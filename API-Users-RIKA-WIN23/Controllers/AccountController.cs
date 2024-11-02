@@ -32,10 +32,14 @@ namespace API_Users_RIKA_WIN23.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsersAsync()
+        public async Task<IActionResult> GetUsersAsync(int count = 0)
         {
-            var result = await _accountService.GetAllUsersAsync();
-            return _statusCodeGenerator.HttpSelector(result);
+            if (count >= 0)
+            {
+                var result = await _accountService.GetAllUsersAsync(count);
+                return _statusCodeGenerator.HttpSelector(result);                
+            }
+            return BadRequest();
         }
         #endregion
 

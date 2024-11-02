@@ -45,12 +45,22 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Services
             }
         }
 
-        public async Task<ResponseResult> GetAllUsersAsync()
+        public async Task<ResponseResult> GetAllUsersAsync(int count)
         {
             try
             {
-                var userEntities = await _context.Users.ToListAsync();
-                if (userEntities.Count() == 0)
+                var userEntities = new List<UserEntity>();
+                if (count > 0)
+                {
+                    userEntities = await _context.Users.Take(count).ToListAsync();
+
+                }
+                else
+                {
+                    userEntities = await _context.Users.ToListAsync();
+                }
+
+                if (userEntities.Count() < 1)
                 {
                     return ResponseFactory.NotFound("No users in database");
                 }

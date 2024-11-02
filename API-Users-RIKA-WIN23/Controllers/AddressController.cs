@@ -40,8 +40,12 @@ public class AddressController(AddressService addressService, StatusCodeGenerato
     [HttpGet]
     public async Task<IActionResult> GetAddressesAsync(int count = 0)
     {
-        var result = await _addressService.GetAllUserAddressesAsync(count);
-        return _statusCodeGenerator.HttpSelector(result);
+        if (count >= 0)
+        {
+            var result = await _addressService.GetAllUserAddressesAsync(count);
+            return _statusCodeGenerator.HttpSelector(result);
+        }
+        return BadRequest();
     }
 
     [HttpPut]
