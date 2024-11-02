@@ -77,11 +77,11 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    AddressLine = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AddressLine = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ApartmentNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PostalCode = table.Column<int>(type: "int", nullable: false),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Country = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API_Users_RIKA_WIN23.Infrastructure.DTOs;
@@ -6,22 +7,18 @@ namespace API_Users_RIKA_WIN23.Infrastructure.DTOs;
 public class UserAddressDto
 {
     [Required]
-    [ForeignKey("UserId")]
     public string UserId { get; set; } = null!;
 
-    public UserDto User { get; set; } = new();
+    [ProtectedPersonalData]
+    public string? AddressLine { get; set; }
 
-    [Required]
-    public string AddressLine { get; set; } = null!;
-
+    [ProtectedPersonalData]
     public string? ApartmentNumber { get; set; }
 
-    [RegularExpression(@"^\d{5}$", ErrorMessage = "PostalCode invalid, please submit 5 digits only.")]
-    public int PostalCode { get; set; }
-
-    [Required]
-    public string City { get; set; } = null!;
-
-    [Required]
-    public string Country { get; set; } = null!;
+    [RegularExpression(@"^\d{5}$", ErrorMessage = "PostalCode invalid, submit 5 digits only.")]
+    public int PostalCode { get; set; } = 00000;
+       
+    public string? City { get; set; }
+       
+    public string? Country { get; set; }
 }

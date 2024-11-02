@@ -22,11 +22,11 @@ builder.Services.AddDefaultIdentity<UserEntity>(x =>
 })
 .AddEntityFrameworkStores<DataContext>();
 
-builder.Services.AddScoped<AccountService>();
-builder.Services.AddScoped<AuthService>();
-builder.Services.AddScoped<ProfileService>();
 builder.Services.AddScoped<StatusCodeGenerator>();
-
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<AddressService>();
+builder.Services.AddScoped<ProfileService>();
 
 var app = builder.Build();
 
