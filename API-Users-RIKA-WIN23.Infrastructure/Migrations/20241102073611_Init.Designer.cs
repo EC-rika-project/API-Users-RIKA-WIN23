@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API_Users_RIKA_WIN23.Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20241101085720_Init")]
+    [Migration("20241102073611_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -56,18 +56,15 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AddressLine")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ApartmentNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("City")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Country")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PostalCode")

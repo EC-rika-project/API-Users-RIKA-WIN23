@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API_Users_RIKA_WIN23.Infrastructure.Entities;
@@ -10,19 +11,18 @@ public class UserAddressEntity
     [ForeignKey("UserId")]
     public string UserId { get; set; } = null!;
 
-    public UserEntity User { get; set; } = new();
+    public UserEntity? User { get; set; }
 
-    [Required]
-    public string AddressLine { get; set; } = null!;
+    [ProtectedPersonalData]
+    public string? AddressLine { get; set; }
 
+    [ProtectedPersonalData]
     public string? ApartmentNumber { get; set; }
 
-    [RegularExpression("^\\d{3}\\s\\d{2}$", ErrorMessage = "Please enter a valid postal code format (e.g. 123 45).")]
-    public int PostalCode { get; set; }
+    [RegularExpression(@"^\d{5}$", ErrorMessage = "PostalCode invalid, submit 5 digits only.")]
+    public int PostalCode { get; set; } = 00000;
+       
+    public string? City { get; set; }
 
-    [Required]
-    public string City { get; set; } = null!;
-
-    [Required]
-    public string Country { get; set; } = null!;
+    public string? Country { get; set; }
 }

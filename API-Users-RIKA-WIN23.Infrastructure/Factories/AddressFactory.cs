@@ -38,4 +38,19 @@ public class AddressFactory
         };
     }
 
+    public static IEnumerable<UserAddressDto> Create(List<UserAddressEntity> entities)
+    {
+        if (entities == null || entities.Count == 0)
+        {
+            return null!;
+        }
+        var dtos = new List<UserAddressDto>();
+        foreach (var entity in entities)
+        {
+            dtos.Add(Create(entity));
+        }
+        return dtos;
+    }
+        
+
 }
