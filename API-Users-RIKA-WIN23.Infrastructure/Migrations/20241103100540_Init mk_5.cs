@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace API_Users_RIKA_WIN23.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class Initmk_5 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -224,15 +224,15 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Migrations
                 name: "WishLists",
                 columns: table => new
                 {
-                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProductIDs = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProductIds = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_WishLists", x => x.UserID);
+                    table.PrimaryKey("PK_WishLists", x => x.UserId);
                     table.ForeignKey(
-                        name: "FK_WishLists_AspNetUsers_UserID",
-                        column: x => x.UserID,
+                        name: "FK_WishLists_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -244,7 +244,6 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Migrations
                 {
                     UserShoppingCartId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProductId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ShoppingCartId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProductPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false)
                 },
@@ -252,8 +251,8 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_ShoppingCartItems", x => new { x.UserShoppingCartId, x.ProductId });
                     table.ForeignKey(
-                        name: "FK_ShoppingCartItems_ShoppingCarts_ShoppingCartId",
-                        column: x => x.ShoppingCartId,
+                        name: "FK_ShoppingCartItems_ShoppingCarts_UserShoppingCartId",
+                        column: x => x.UserShoppingCartId,
                         principalTable: "ShoppingCarts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -303,11 +302,6 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Migrations
                 table: "Profiles",
                 column: "Email",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ShoppingCartItems_ShoppingCartId",
-                table: "ShoppingCartItems",
-                column: "ShoppingCartId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ShoppingCarts_UserId",

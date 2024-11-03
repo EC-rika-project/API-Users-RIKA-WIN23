@@ -8,7 +8,7 @@ public class UserAddressEntity
 {
     [Required]
     [Key]
-    [ForeignKey("UserId")]
+    [ForeignKey(nameof(User))]
     public string UserId { get; set; } = null!;
 
     public UserEntity? User { get; set; }

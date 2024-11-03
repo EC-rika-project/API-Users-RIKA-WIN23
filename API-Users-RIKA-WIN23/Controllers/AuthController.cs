@@ -106,19 +106,4 @@ public class AuthController(IConfiguration configuration, AuthService authServic
         return BadRequest();
     }
     #endregion
-
-    #region SignUp
-    [Route("/api/SignUp")]
-    [HttpPost]
-    public async Task<IActionResult> SignUp(SignUpDto user)
-    {
-        if (ModelState.IsValid)
-        {            
-            var result = await _authService.SignUpUserAsync(user);
-            return _statusCodeSelector.HttpSelector(result);
-        }
-
-        return BadRequest();
-    }
-    #endregion
 }

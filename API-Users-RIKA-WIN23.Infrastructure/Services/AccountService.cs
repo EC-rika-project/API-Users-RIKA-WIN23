@@ -6,17 +6,114 @@ using API_Users_RIKA_WIN23.Infrastructure.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
+using System.Diagnostics;
 
 
 namespace API_Users_RIKA_WIN23.Infrastructure.Services
 {
-    public class AccountService(UserManager<UserEntity> userManager, DataContext context)
+    public class AccountService(UserManager<UserEntity> userManager, DataContext context, ProfileService profileService, AddressService addressService)
     {
         private readonly UserManager<UserEntity> _userManager = userManager;
         private readonly DataContext _context = context;
+        private readonly ProfileService _profileService = profileService;
+        private readonly AddressService _addressService = addressService;
+
 
         #region Create
-        //Create user method is located in AuthService as SignUpUserAsync.
+        public async Task<ResponseResult> CreateOneUserAsync(SignUpDto newUserDto)
+        {
+            var errorMessage = ", errors occured when creating; ";
+            var errors = false;
+            try
+            {
+                using var transaction = await _context.Database.BeginTransactionAsync();
+
+                var existingUser = await _userManager.FindByEmailAsync(newUserDto.Email);
+                if (existingUser != null)
+                {
+                    return ResponseFactory.Exists("Email is already in use");
+                }
+
+                var newUserEntity = new UserEntity()
+                {
+                    Email = newUserDto.Email,
+                    UserName = newUserDto.Email,
+                };
+
+                var result = await _userManager.CreateAsync(newUserEntity, newUserDto.Password);
+                if (result.Succeeded)
+                {
+                    var user = await _userManager.FindByEmailAsync(newUserDto.Email);
+
+                    if (user != null)
+                    {
+
+                        var profile = new UserProfileEntity
+                        {
+                            FirstName = newUserDto.FirstName,
+                            LastName = newUserDto.LastName,
+                            UserId = user.Id,
+                            Email = user.Email!
+                        };
+                        var address = new UserAddressEntity
+                        {
+                            UserId = user.Id,
+                        };
+                        var wishList = new UserWishListEntity
+                        {
+                            UserId = user.Id,
+                        };
+                        var shoppingCart = new UserShoppingCartEntity
+                        {
+                            UserId = user.Id,
+                        };
+
+                        _context.Profiles.Add(profile);
+                        _context.Addresses.Add(address);
+                        _context.WishLists.Add(wishList);
+                        _context.ShoppingCarts.Add(shoppingCart);
+                        await _context.SaveChangesAsync();
+
+                        if (_context.Entry(profile).State != EntityState.Unchanged)
+                        {
+                            errorMessage += "-Profile ";
+                            errors = true;
+                        }
+                        if (_context.Entry(address).State != EntityState.Unchanged)
+                        {
+                            errorMessage += "-Address ";
+                            errors = true;
+                        }
+                        if (_context.Entry(wishList).State != EntityState.Unchanged)
+                        {
+                            errorMessage += "-WishList ";
+                            errors = true;
+                        }
+                        if (_context.Entry(shoppingCart).State != EntityState.Unchanged)
+                        {
+                            errorMessage += "-ShoppingCart ";
+                            errors = true;
+                        }
+                        
+                        if (errors)
+                        {
+                            await transaction.RollbackAsync();
+                            await _userManager.DeleteAsync(user);
+                            return ResponseFactory.InternalServerError($"User could not be created: {errorMessage}. Please try again, contact customer service if issue persists.");
+                        }
+                    }
+                }
+
+                await transaction.CommitAsync();
+                return ResponseFactory.Created($"User: {newUserDto.Email}, was created succesfully");
+
+            }
+            catch (Exception ex)
+            {
+                return ResponseFactory.InternalServerError($"User could not be created or was created with errors: {errorMessage}, {ex.Message}");
+            }
+
+        }
         #endregion
 
         #region Read
@@ -93,7 +190,7 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Services
 
                 if (updatedUserDto.Profile != null)
                 {
-                    existingUser.Profile= UserProfileFactory.Create(updatedUserDto.Profile);
+                    existingUser.Profile = UserProfileFactory.Create(updatedUserDto.Profile);
                 }
                 if (updatedUserDto.Address != null)
                 {

@@ -36,13 +36,7 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<string>("ShoppingCartId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("UserShoppingCartId", "ProductId");
-
-                    b.HasIndex("ShoppingCartId");
 
                     b.ToTable("ShoppingCartItems");
                 });
@@ -191,14 +185,14 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Migrations
 
             modelBuilder.Entity("API_Users_RIKA_WIN23.Infrastructure.Entities.UserWishListEntity", b =>
                 {
-                    b.Property<string>("UserID")
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ProductIDs")
+                    b.Property<string>("ProductIds")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserID");
+                    b.HasKey("UserId");
 
                     b.ToTable("WishLists");
                 });
@@ -344,7 +338,7 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Migrations
                 {
                     b.HasOne("API_Users_RIKA_WIN23.Infrastructure.Entities.UserShoppingCartEntity", "ShoppingCart")
                         .WithMany("Products")
-                        .HasForeignKey("ShoppingCartId")
+                        .HasForeignKey("UserShoppingCartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -388,7 +382,7 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Migrations
                 {
                     b.HasOne("API_Users_RIKA_WIN23.Infrastructure.Entities.UserEntity", "User")
                         .WithOne("WishList")
-                        .HasForeignKey("API_Users_RIKA_WIN23.Infrastructure.Entities.UserWishListEntity", "UserID")
+                        .HasForeignKey("API_Users_RIKA_WIN23.Infrastructure.Entities.UserWishListEntity", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

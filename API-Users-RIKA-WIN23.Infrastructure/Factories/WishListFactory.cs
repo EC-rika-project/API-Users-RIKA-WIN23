@@ -13,8 +13,8 @@ public class WishListFactory
         }
         return new UserWishListDto
         {
-            UserID = entity.UserID,
-            ProductIDs = entity.ProductIDs,
+            UserId = entity.UserId,
+            ProductIds = entity.ProductIds,
         };
     }
 
@@ -26,8 +26,8 @@ public class WishListFactory
         }
         return new UserWishListEntity
         {
-            UserID = dto.UserID,
-            ProductIDs = dto.ProductIDs,
+            UserId = dto.UserId,
+            ProductIds = dto.ProductIds,
         };
     }
 }
