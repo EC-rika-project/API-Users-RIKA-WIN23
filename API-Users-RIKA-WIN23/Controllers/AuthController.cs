@@ -91,7 +91,7 @@ public class AuthController(IConfiguration configuration, AuthService authServic
     #region SignIn
     [Route("/api/SignIn")]
     [HttpPost]
-    public async Task<IActionResult> SignIn(SignInDto user)
+    public async Task<IActionResult> SignInAsync(SignInDto user)
     {
         if (ModelState.IsValid)
         {

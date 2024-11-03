@@ -16,7 +16,7 @@ namespace API_Users_RIKA_WIN23.Controllers
         #region Post
         [Route("/api/SignUp")]
         [HttpPost]
-        public async Task<IActionResult> SignUp(SignUpDto user)
+        public async Task<IActionResult> SignUpAsync(SignUpDto user)
         {
             if (ModelState.IsValid)
             {

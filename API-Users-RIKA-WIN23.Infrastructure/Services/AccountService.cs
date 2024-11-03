@@ -5,8 +5,6 @@ using API_Users_RIKA_WIN23.Infrastructure.Factories;
 using API_Users_RIKA_WIN23.Infrastructure.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
-using System.Diagnostics;
 
 
 namespace API_Users_RIKA_WIN23.Infrastructure.Services
@@ -47,6 +45,14 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Services
 
                     if (user != null)
                     {
+                        //make securityKey the id for the given role we want to assign. Alternatively make a dictionary with key:roles corresponding to a value:string and select from that.
+                        var securityKeyRole = newUserDto.SecurityKey == "admin" ? "admin" : "user";     
+                        var role = await _context.Roles.FirstOrDefaultAsync(x => x.Name == securityKeyRole);
+                        var userRole = new IdentityUserRole<string> { RoleId = role!.Id, UserId = user.Id };
+                        if (role != null && !string.IsNullOrEmpty(role.Id))
+                        {
+                            _context.UserRoles.Add(userRole);
+                        }
 
                         var profile = new UserProfileEntity
                         {
@@ -68,12 +74,18 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Services
                             UserId = user.Id,
                         };
 
+                       
                         _context.Profiles.Add(profile);
                         _context.Addresses.Add(address);
                         _context.WishLists.Add(wishList);
                         _context.ShoppingCarts.Add(shoppingCart);
                         await _context.SaveChangesAsync();
 
+                        if (_context.Entry(userRole).State != EntityState.Unchanged)
+                        {
+                            errorMessage += "-UserRole ";
+                            errors = true;
+                        }
                         if (_context.Entry(profile).State != EntityState.Unchanged)
                         {
                             errorMessage += "-Profile ";
@@ -127,13 +139,24 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Services
                     .Include(x => x.WishList)
                     .Include(x => x.ShoppingCarts)
                     .FirstOrDefaultAsync(x => x.UserName == email);
-
                 if (userEntity == null)
                 {
                     return ResponseFactory.NotFound($"There is no user with email address: {email} in database.");
                 }
 
                 var userDto = UserFactory.Create(userEntity);
+                if (userDto == null)
+                {
+                    return ResponseFactory.InternalServerError($"Failed to convert user with email address: {email} from database entity");
+
+                }
+
+                var roles = new List<string>();
+                foreach (var role in await _userManager.GetRolesAsync(userEntity))
+                {
+                    roles.Add(role);
+                }
+                userDto.UserRoles = roles;
                 return ResponseFactory.Ok(userDto);
             }
             catch (Exception ex)
