@@ -5,11 +5,12 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Entities;
 
 public class UserWishListEntity
 {
+    [Required]
     [Key]
-    [ForeignKey("UserId")]
-    public string UserID { get; set; } = null!;
+    [ForeignKey(nameof(User))]
+    public string UserId { get; set; } = null!;
 
-    public UserEntity User { get; set; } = new();
+    public UserEntity? User { get; set; }
 
-    public List<string> ProductIDs { get; set; } = new List<string>();
+    public List<string> ProductIds { get; set; } = new List<string>();
 }

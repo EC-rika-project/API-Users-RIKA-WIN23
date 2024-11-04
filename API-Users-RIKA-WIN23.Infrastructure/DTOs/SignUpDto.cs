@@ -12,4 +12,5 @@ public class SignUpDto
 
     [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%?&])[A-Za-z\d@$!%?&]{8,}$", ErrorMessage = "Password invalid.")]
     public string Password { get; set; } = null!;
+    public string? SecurityKey { get; set; }
 }

@@ -14,9 +14,21 @@ namespace API_Users_RIKA_WIN23.Controllers
         private readonly AccountService _accountService = accountService;
 
         #region Post
-        //Create endpoint is located in authcontroller as a HttpPost SignUp.
+        [Route("/api/SignUp")]
+        [HttpPost]
+        public async Task<IActionResult> SignUpAsync(SignUpDto user)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _accountService.CreateOneUserAsync(user);
+                return _statusCodeGenerator.HttpSelector(result);
+            }
+
+            return BadRequest();
+        }
         #endregion
 
+        //Should be admin only endpoint
         #region Get
         [Route("/api/Account/{email}")]
         [HttpGet]
@@ -31,6 +43,7 @@ namespace API_Users_RIKA_WIN23.Controllers
             return BadRequest();
         }
 
+        //Should be admin only endpoint
         [HttpGet]
         public async Task<IActionResult> GetUsersAsync(int count = 0)
         {

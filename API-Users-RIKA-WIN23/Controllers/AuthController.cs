@@ -1,14 +1,8 @@
 ﻿using API_Users_RIKA_WIN23.Infrastructure.DTOs;
 using API_Users_RIKA_WIN23.Infrastructure.Services;
 using API_Users_RIKA_WIN23.Infrastructure.Utilities;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.Diagnostics;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+
 
 namespace API_Users_RIKA_WIN23.Controllers;
 
@@ -91,7 +85,7 @@ public class AuthController(IConfiguration configuration, AuthService authServic
     #region SignIn
     [Route("/api/SignIn")]
     [HttpPost]
-    public async Task<IActionResult> SignIn(SignInDto user)
+    public async Task<IActionResult> SignInAsync(SignInDto user)
     {
         if (ModelState.IsValid)
         {
@@ -101,21 +95,6 @@ public class AuthController(IConfiguration configuration, AuthService authServic
             {
                 return Ok(result);
             }
-        }
-
-        return BadRequest();
-    }
-    #endregion
-
-    #region SignUp
-    [Route("/api/SignUp")]
-    [HttpPost]
-    public async Task<IActionResult> SignUp(SignUpDto user)
-    {
-        if (ModelState.IsValid)
-        {            
-            var result = await _authService.SignUpUserAsync(user);
-            return _statusCodeSelector.HttpSelector(result);
         }
 
         return BadRequest();

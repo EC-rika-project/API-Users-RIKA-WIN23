@@ -11,11 +11,23 @@ public class ShoppingCartFactory
         {
             return null!;
         }
-        return new UserShoppingCartDto
+
+        decimal totalPrice = 0;
+        if (entity.Products.Count() > 0)
         {
+            foreach (var product in entity.Products)
+            {
+                totalPrice += (product.ProductPrice * product.Quantity);
+            };
+        }
+
+        return new UserShoppingCartDto
+        {      
+            
             Id = entity.Id,
             UserId = entity.UserId,
-            Products = ShoppingCartItemFactory.Create(entity.Products)
+            Products = ShoppingCartItemFactory.Create(entity.Products),
+            TotalPrice = totalPrice,
         };
     }
 

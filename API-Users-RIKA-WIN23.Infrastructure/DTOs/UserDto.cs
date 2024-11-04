@@ -6,6 +6,7 @@ public class UserDto
 {
     public string Id { get; set; } = null!;
     public string? UserName { get; set; }
+    public List<string>? UserRoles { get; set; }
     public bool IsExternalAccount { get; set; } = false;
     public UserProfileDto? Profile { get; set; }
     public UserAddressDto? Address { get; set; }
