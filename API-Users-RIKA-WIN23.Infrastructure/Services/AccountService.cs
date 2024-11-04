@@ -128,7 +128,7 @@ public class AccountService(UserManager<UserEntity> userManager, DataContext con
             userRoleName = "user";
         }
 
-        if (!string.IsNullOrEmpty(userRoleName))
+        if (string.IsNullOrEmpty(userRoleName))
         {
             return null!;
         }

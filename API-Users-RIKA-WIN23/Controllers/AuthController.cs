@@ -140,17 +140,19 @@ public class AuthController(DataContext context, IConfiguration configuration, U
                 new Claim(ClaimTypes.NameIdentifier, userEntity.Id), 
             };
 
-            foreach (var role in await _userManager.GetRolesAsync(userEntity))
+            var roles = await _userManager.GetRolesAsync(userEntity);
+            foreach (var role in roles)
             {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-                if (role == "user")
-                {
-                    claims.Add(new Claim("Permission", "CanEditSelf"));
-                }
-                if (role == "admin")
-                {
-                    claims.Add(new Claim("Permission", "CanEditAllUsers"));
-                }
+                claims.Add(new Claim(ClaimTypes.Role, role)); 
+            }
+            
+            if (roles.Contains("admin"))
+            {
+                claims.Add(new Claim("permission", "CanEditAllUsers"));
+            }
+            else if (roles.Contains("user"))
+            {
+                claims.Add(new Claim("permission", "CanEditSelf"));
             }
 
             var tokenHandler = new JwtSecurityTokenHandler();
