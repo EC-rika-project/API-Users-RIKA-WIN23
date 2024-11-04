@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -137,7 +136,7 @@ public class AuthController(DataContext context, IConfiguration configuration, U
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.Name, userEntity.Email!),
-                new Claim(ClaimTypes.NameIdentifier, userEntity.Id), 
+                new Claim(ClaimTypes.NameIdentifier, userEntity.Id),
             };
 
             var roles = await _userManager.GetRolesAsync(userEntity);
@@ -178,6 +177,4 @@ public class AuthController(DataContext context, IConfiguration configuration, U
         }
     }
     #endregion
-
-
 }
