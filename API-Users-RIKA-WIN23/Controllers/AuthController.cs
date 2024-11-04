@@ -166,7 +166,11 @@ public class AuthController(DataContext context, IConfiguration configuration, U
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            return ResponseFactory.Created(tokenHandler.WriteToken(token));
+            var JWT = new JwtDto
+            {
+                JWT = tokenHandler.WriteToken(token)
+            };
+            return ResponseFactory.Created(JWT);
         }
         catch (Exception ex)
         {
