@@ -12,7 +12,7 @@ public class AuthController(IConfiguration configuration, AuthService authServic
 {
     private readonly IConfiguration _configuration = configuration;
     private readonly AuthService _authService = authService;
-    private readonly StatusCodeGenerator _statusCodeSelector = statusCodeSelector;
+    private readonly StatusCodeGenerator _statusCodeGenerator = statusCodeSelector;
 
     #region Token Authentication
     [Route("/api/JWT")]
@@ -89,12 +89,8 @@ public class AuthController(IConfiguration configuration, AuthService authServic
     {
         if (ModelState.IsValid)
         {
-            // Create a service for the following logic:
             var result = await _authService.SignInUserAsync(user);
-            if (result != null)
-            {
-                return Ok(result);
-            }
+            return _statusCodeGenerator.HttpSelector(result);
         }
 
         return BadRequest();
