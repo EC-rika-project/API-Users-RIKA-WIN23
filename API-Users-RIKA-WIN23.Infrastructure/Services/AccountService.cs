@@ -9,19 +9,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API_Users_RIKA_WIN23.Infrastructure.Services
 {
-    public class AccountService(UserManager<UserEntity> userManager, DataContext context, ProfileService profileService, AddressService addressService)
+    public class AccountService(UserManager<UserEntity> userManager, DataContext context)
     {
         private readonly UserManager<UserEntity> _userManager = userManager;
         private readonly DataContext _context = context;
-        private readonly ProfileService _profileService = profileService;
-        private readonly AddressService _addressService = addressService;
-
 
         #region Create
         public async Task<ResponseResult> CreateOneUserAsync(SignUpDto newUserDto)
         {
-            var errorMessage = ", errors occured when creating; ";
-            var errors = false;
             try
             {
                 using var transaction = await _context.Database.BeginTransactionAsync();
@@ -29,7 +24,7 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Services
                 var existingUser = await _userManager.FindByEmailAsync(newUserDto.Email);
                 if (existingUser != null)
                 {
-                    return ResponseFactory.Exists("Email is already in use");
+                    return ResponseFactory.Exists($"Email: {newUserDto.Email} is already in use");
                 }
 
                 var newUserEntity = new UserEntity()
@@ -38,93 +33,119 @@ namespace API_Users_RIKA_WIN23.Infrastructure.Services
                     UserName = newUserDto.Email,
                 };
 
-                var result = await _userManager.CreateAsync(newUserEntity, newUserDto.Password);
-                if (result.Succeeded)
+                var newUserResult = await _userManager.CreateAsync(newUserEntity, newUserDto.Password);
+                if (!newUserResult.Succeeded)
                 {
-                    var user = await _userManager.FindByEmailAsync(newUserDto.Email);
-
-                    if (user != null)
-                    {
-                        //make securityKey the id for the given role we want to assign. Alternatively make a dictionary with key:roles corresponding to a value:string and select from that.
-                        var securityKeyRole = newUserDto.SecurityKey == "admin" ? "admin" : "user";     
-                        var role = await _context.Roles.FirstOrDefaultAsync(x => x.Name == securityKeyRole);
-                        var userRole = new IdentityUserRole<string> { RoleId = role!.Id, UserId = user.Id };
-                        if (role != null && !string.IsNullOrEmpty(role.Id))
-                        {
-                            _context.UserRoles.Add(userRole);
-                        }
-
-                        var profile = new UserProfileEntity
-                        {
-                            FirstName = newUserDto.FirstName,
-                            LastName = newUserDto.LastName,
-                            UserId = user.Id,
-                            Email = user.Email!
-                        };
-                        var address = new UserAddressEntity
-                        {
-                            UserId = user.Id,
-                        };
-                        var wishList = new UserWishListEntity
-                        {
-                            UserId = user.Id,
-                        };
-                        var shoppingCart = new UserShoppingCartEntity
-                        {
-                            UserId = user.Id,
-                        };
-
-                       
-                        _context.Profiles.Add(profile);
-                        _context.Addresses.Add(address);
-                        _context.WishLists.Add(wishList);
-                        _context.ShoppingCarts.Add(shoppingCart);
-                        await _context.SaveChangesAsync();
-
-                        if (_context.Entry(userRole).State != EntityState.Unchanged)
-                        {
-                            errorMessage += "-UserRole ";
-                            errors = true;
-                        }
-                        if (_context.Entry(profile).State != EntityState.Unchanged)
-                        {
-                            errorMessage += "-Profile ";
-                            errors = true;
-                        }
-                        if (_context.Entry(address).State != EntityState.Unchanged)
-                        {
-                            errorMessage += "-Address ";
-                            errors = true;
-                        }
-                        if (_context.Entry(wishList).State != EntityState.Unchanged)
-                        {
-                            errorMessage += "-WishList ";
-                            errors = true;
-                        }
-                        if (_context.Entry(shoppingCart).State != EntityState.Unchanged)
-                        {
-                            errorMessage += "-ShoppingCart ";
-                            errors = true;
-                        }
-                        
-                        if (errors)
-                        {
-                            await transaction.RollbackAsync();
-                            await _userManager.DeleteAsync(user);
-                            return ResponseFactory.InternalServerError($"User could not be created: {errorMessage}. Please try again, contact customer service if issue persists.");
-                        }
-                    }
+                    return ResponseFactory.InternalServerError($"User {newUserDto.Email} could not be created. Please try again & contact customer service if issue persists.");
                 }
 
+                var newUserTables = await CreateAdditionalUserTablesAsync(newUserDto);
+                if (newUserTables.Errors)
+                {
+                    await transaction.RollbackAsync();
+                    if (newUserTables.User != null)
+                    {
+                        await _userManager.DeleteAsync(newUserTables.User);
+                        return ResponseFactory.InternalServerError($"User {newUserDto.Email} could not be created beacause {newUserTables.ErrorMessage} .\nPlease try again & contact customer service if issue persists.");
+
+                    }
+                    return ResponseFactory.InternalServerError($"User {newUserDto.Email} could not be created or was created with errors: {newUserTables.ErrorMessage}.\nPlease try again & contact customer service if issue persists.");
+                }
+                    
                 await transaction.CommitAsync();
                 return ResponseFactory.Created($"User: {newUserDto.Email}, was created succesfully");
-
             }
             catch (Exception ex)
             {
-                return ResponseFactory.InternalServerError($"User could not be created or was created with errors: {errorMessage}, {ex.Message}");
+                return ResponseFactory.InternalServerError($"User could not be created or was created with errors: {ex.Message}");
+            }
+        }
+
+        private async Task<(string ErrorMessage, bool Errors, UserEntity? User)> CreateAdditionalUserTablesAsync(SignUpDto newUserDto)
+        {
+            var user = await _userManager.FindByEmailAsync(newUserDto.Email);
+
+            if (user != null)
+            {
+                var roleResult = await AssignRoleAsync(newUserDto, user);
+                if (roleResult != null)
+                {
+                    _context.UserRoles.Add(roleResult);
+                }
+
+                var profile = new UserProfileEntity
+                {
+                    FirstName = newUserDto.FirstName,
+                    LastName = newUserDto.LastName,
+                    UserId = user.Id,
+                    Email = user.Email!
+                };
+                var address = new UserAddressEntity
+                {
+                    UserId = user.Id,
+                };
+                var wishList = new UserWishListEntity
+                {
+                    UserId = user.Id,
+                };
+                var shoppingCart = new UserShoppingCartEntity
+                {
+                    UserId = user.Id,
+                };
+
+                _context.Profiles.Add(profile);
+                _context.Addresses.Add(address);
+                _context.WishLists.Add(wishList);
+                _context.ShoppingCarts.Add(shoppingCart);
+                await _context.SaveChangesAsync();
+
+                var result = CheckContextForErrors(roleResult!, profile, address, wishList, shoppingCart);
+                return (result.ErrorMessage, result.Errors, user);                
+            }
+            return ("User not found in database after being created", true, null);
+        }
+
+        private async Task<IdentityUserRole<string>> AssignRoleAsync(SignUpDto newUserDto, UserEntity user)
+        {
+            //make securityKey the id for the given role we want to assign. Alternatively make a dictionary with key:roles corresponding to a value:string and select from that.
+            var securityKeyRole = newUserDto.SecurityKey == "admin" ? "admin" : "user"; // this line will be unnecessary later when roles will be determined by actual securitykey
+            var role = await _context.Roles.FirstOrDefaultAsync(x => x.Name == securityKeyRole);
+            return new IdentityUserRole<string> { RoleId = role!.Id, UserId = user.Id };
+        }
+
+        private (string ErrorMessage, bool Errors) CheckContextForErrors(IdentityUserRole<string> roleResult, UserProfileEntity profile, UserAddressEntity address, UserWishListEntity wishList, UserShoppingCartEntity shoppingCart)
+        {
+            string errorMessage = ", errors occured when creating; ";
+            bool errors = false;
+
+
+            if (_context.Entry(roleResult).State != EntityState.Unchanged)
+            {
+                errorMessage += "-UserRole ";
+                errors = true;
+            }
+            if (_context.Entry(profile).State != EntityState.Unchanged)
+            {
+                errorMessage += "-Profile ";
+                errors = true;
+            }
+            if (_context.Entry(address).State != EntityState.Unchanged)
+            {
+                errorMessage += "-Address ";
+                errors = true;
+            }
+            if (_context.Entry(wishList).State != EntityState.Unchanged)
+            {
+                errorMessage += "-WishList ";
+                errors = true;
+            }
+            if (_context.Entry(shoppingCart).State != EntityState.Unchanged)
+            {
+                errorMessage += "-ShoppingCart ";
+                errors = true;
             }
 
+            return (errorMessage, errors);
         }
         #endregion
 

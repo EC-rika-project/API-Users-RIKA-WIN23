@@ -28,6 +28,7 @@ namespace API_Users_RIKA_WIN23.Controllers
         }
         #endregion
 
+        //Should be admin only endpoint
         #region Get
         [Route("/api/Account/{email}")]
         [HttpGet]
@@ -42,6 +43,7 @@ namespace API_Users_RIKA_WIN23.Controllers
             return BadRequest();
         }
 
+        //Should be admin only endpoint
         [HttpGet]
         public async Task<IActionResult> GetUsersAsync(int count = 0)
         {
