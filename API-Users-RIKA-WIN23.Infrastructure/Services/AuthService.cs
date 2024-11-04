@@ -18,7 +18,9 @@ public class AuthService(SignInManager<UserEntity> signInManager, AccountService
             var signInResult = await _signInManager.PasswordSignInAsync(signInDto.Email, signInDto.Password, signInDto.RememberMe, false);
             if (signInResult.Succeeded)
             {
-                return await _accountService.GetOneUserAsync(signInDto.Email);
+                //This should probably return a created JWT Token with the correct Claims that the client app can then create a cookie with.
+                //Which in turn identity can create a ClaimsPrincipal from.
+                return ResponseFactory.Ok();
             }
 
             return ResponseFactory.Error($"Sign in failed, check your credentials and try again.");

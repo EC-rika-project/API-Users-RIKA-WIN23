@@ -5,14 +5,16 @@ using API_Users_RIKA_WIN23.Infrastructure.Factories;
 using API_Users_RIKA_WIN23.Infrastructure.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 
 namespace API_Users_RIKA_WIN23.Infrastructure.Services;
 
-public class AccountService(UserManager<UserEntity> userManager, DataContext context)
+public class AccountService(UserManager<UserEntity> userManager, DataContext context, IConfiguration configuration)
 {
     private readonly UserManager<UserEntity> _userManager = userManager;
     private readonly DataContext _context = context;
+    private readonly IConfiguration _configuration = configuration;
 
     #region Create
     public async Task<ResponseResult> CreateOneUserAsync(SignUpDto newUserDto)
@@ -51,7 +53,7 @@ public class AccountService(UserManager<UserEntity> userManager, DataContext con
                 }
                 return ResponseFactory.InternalServerError($"User {newUserDto.Email} could not be created or was created with errors: {newUserTables.ErrorMessage}.\nPlease try again & contact customer service if issue persists.");
             }
-                
+
             await transaction.CommitAsync();
             return ResponseFactory.Created($"User: {newUserDto.Email}, was created succesfully");
         }
@@ -71,6 +73,10 @@ public class AccountService(UserManager<UserEntity> userManager, DataContext con
             if (roleResult != null)
             {
                 _context.UserRoles.Add(roleResult);
+            }
+            else
+            {
+                return ("User role key not supplied, failed to create User", true, null);
             }
 
             var profile = new UserProfileEntity
@@ -100,15 +106,34 @@ public class AccountService(UserManager<UserEntity> userManager, DataContext con
             await _context.SaveChangesAsync();
 
             var result = CheckContextForErrors(roleResult!, profile, address, wishList, shoppingCart);
-            return (result.ErrorMessage, result.Errors, user);                
+            return (result.ErrorMessage, result.Errors, user);
         }
         return ("User not found in database after being created", true, null);
     }
 
     private async Task<IdentityUserRole<string>> AssignRoleAsync(SignUpDto newUserDto, UserEntity user)
     {
-        //make securityKey the id for the given role we want to assign. Alternatively make a dictionary with key:roles corresponding to a value:string and select from that.
-        var securityKeyRole = newUserDto.SecurityKey == "admin" ? "admin" : "user"; // this line will be unnecessary later when roles will be determined by actual securitykey
+        //This sets Admin role depending on which supplied key was used to set newUserDto.SecurityKey. Not ideal but a quick fix for the time being.
+        var webAppKey = _configuration.GetSection("SecurityKeys")["WebAppKey"];
+        var adminAppKey = _configuration.GetSection("SecurityKeys")["AdminAppKey"];
+        var userRoleName = string.Empty;
+
+        if (newUserDto.SecurityKey == adminAppKey)
+        {
+            userRoleName = "admin";
+        }
+
+        if (newUserDto.SecurityKey == webAppKey)
+        {
+            userRoleName = "user";
+        }
+
+        if (!string.IsNullOrEmpty(userRoleName))
+        {
+            return null!;
+        }
+
+        var securityKeyRole = newUserDto.SecurityKey == adminAppKey ? "admin" : newUserDto.SecurityKey == webAppKey ? "user" : ""; // this line will be unnecessary later when roles will be determined by actual securitykey
         var role = await _context.Roles.FirstOrDefaultAsync(x => x.Name == securityKeyRole);
         return new IdentityUserRole<string> { RoleId = role!.Id, UserId = user.Id };
     }
