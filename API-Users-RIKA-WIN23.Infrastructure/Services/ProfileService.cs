@@ -2,13 +2,14 @@
 using API_Users_RIKA_WIN23.Infrastructure.DTOs;
 using API_Users_RIKA_WIN23.Infrastructure.Entities;
 using API_Users_RIKA_WIN23.Infrastructure.Factories;
+using API_Users_RIKA_WIN23.Infrastructure.Interfaces;
 using API_Users_RIKA_WIN23.Infrastructure.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace API_Users_RIKA_WIN23.Infrastructure.Services;
 
-public class ProfileService(UserManager<UserEntity> userManager, DataContext context)
+public class ProfileService(UserManager<UserEntity> userManager, DataContext context) : IProfileService
 {
     private readonly UserManager<UserEntity> _userManager = userManager;
     private readonly DataContext _context = context;
