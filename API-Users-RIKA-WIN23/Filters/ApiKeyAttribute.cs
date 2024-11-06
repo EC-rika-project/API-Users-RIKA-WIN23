@@ -9,7 +9,7 @@ public class ApiKeyAttribute : Attribute, IAsyncActionFilter
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
         var configuration = context.HttpContext.RequestServices.GetService<IConfiguration>();
-        var apiKey = configuration!.GetConnectionString("ApiKey");
+        var apiKey = configuration!.GetValue<string>("ApiSecret");
 
         bool hasKey = context.HttpContext.Request.Query.TryGetValue("key", out var clientKey);
 
