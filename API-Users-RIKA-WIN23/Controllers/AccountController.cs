@@ -1,11 +1,12 @@
-﻿using API_Users_RIKA_WIN23.Infrastructure.DTOs;
+﻿using API_Users_RIKA_WIN23.Filters;
+using API_Users_RIKA_WIN23.Infrastructure.DTOs;
 using API_Users_RIKA_WIN23.Infrastructure.Services;
 using API_Users_RIKA_WIN23.Infrastructure.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_Users_RIKA_WIN23.Controllers
 {
-    // Create DataAnnotation for APIkey in initialize here.
+    [ApiKey]
     [Route("api/[controller]")]
     [ApiController]
     public class AccountController(StatusCodeGenerator statusCodeSelector, AccountService accountService) : ControllerBase

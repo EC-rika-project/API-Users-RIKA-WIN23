@@ -1,4 +1,5 @@
-﻿using API_Users_RIKA_WIN23.Infrastructure.Context;
+﻿using API_Users_RIKA_WIN23.Filters;
+using API_Users_RIKA_WIN23.Infrastructure.Context;
 using API_Users_RIKA_WIN23.Infrastructure.DTOs;
 using API_Users_RIKA_WIN23.Infrastructure.Entities;
 using API_Users_RIKA_WIN23.Infrastructure.Factories;
@@ -95,6 +96,7 @@ public class AuthController(DataContext context, IConfiguration configuration, U
     //}
     //#endregion
 
+    [ApiKey]
     #region SignIn
     [Route("/api/SignIn")]
     [HttpPost]
