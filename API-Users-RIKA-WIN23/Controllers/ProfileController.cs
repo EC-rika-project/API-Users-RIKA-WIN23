@@ -16,6 +16,7 @@ public class ProfileController(StatusCodeGenerator statusCodeGenerator, ProfileS
 
     #region User Profile Endpoints
     // We should check here for permissions and only let admins access this endpoint.
+    [AdminJwtReq]
     [HttpPost]
     public async Task<IActionResult> CreateUserProfileAsync(string email)
     {
@@ -27,6 +28,7 @@ public class ProfileController(StatusCodeGenerator statusCodeGenerator, ProfileS
         return BadRequest();
     }
 
+    [UserJwtReq]
     [HttpGet]
     public async Task<IActionResult> GetUserProfileAsync(string userId)
     {
@@ -38,8 +40,10 @@ public class ProfileController(StatusCodeGenerator statusCodeGenerator, ProfileS
         return BadRequest();
     }
 
+    [UserJwtReq]
+    [Route("/api/Profile/{userId}")]
     [HttpPut]
-    public async Task<IActionResult> UpdateUserProfileAsync(UserProfileDto dto)
+    public async Task<IActionResult> UpdateUserProfileAsync(string userId, UserProfileDto dto)
     {
         if (ModelState.IsValid)
         {
@@ -50,6 +54,7 @@ public class ProfileController(StatusCodeGenerator statusCodeGenerator, ProfileS
     }
 
     // We should check here for permissions and only let admins access this endpoint.
+    [AdminJwtReq]
     [HttpDelete]
     public async Task<IActionResult> DeleteUserProfileAsync(string userId)
     {

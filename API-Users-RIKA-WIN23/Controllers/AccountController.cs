@@ -45,7 +45,7 @@ namespace API_Users_RIKA_WIN23.Controllers
             return BadRequest();
         }
 
-        //Is now admin only endpoint
+        //This is now an admin only endpoint
         [AdminJwtReq]
         [HttpGet]
         public async Task<IActionResult> GetUsersAsync(int count = 0)
@@ -60,8 +60,10 @@ namespace API_Users_RIKA_WIN23.Controllers
         #endregion
 
         #region Put
+        [UserJwtReq]
+        [Route("/api/Account/{userId}")]
         [HttpPut]
-        public async Task<IActionResult> UpdateUserAsync(UserDto updatedUserDto)
+        public async Task<IActionResult> UpdateUserAsync(string userId, UserDto updatedUserDto)
         {
             var result = await _accountService.UpdateUserAsync(updatedUserDto);
             return _statusCodeGenerator.HttpSelector(result);
@@ -69,10 +71,11 @@ namespace API_Users_RIKA_WIN23.Controllers
         #endregion
 
         #region Delete
+        [UserJwtReq]
         [HttpDelete]
-        public async Task<IActionResult> DeleteUserAsync(string id)
+        public async Task<IActionResult> DeleteUserAsync(string userId)
         {
-            var result = await _accountService.DeleteUserAsync(id);
+            var result = await _accountService.DeleteUserAsync(userId);
             return _statusCodeGenerator.HttpSelector(result);
         }
         #endregion

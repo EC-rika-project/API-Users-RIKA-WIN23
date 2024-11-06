@@ -17,7 +17,7 @@ namespace API_Users_RIKA_WIN23.Filters
             
             var token = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             var hasEmail = context.ActionArguments.TryGetValue("email", out var queryEmail) && queryEmail is string emailFromRoute;
-            var hasId = context.ActionArguments.TryGetValue("userId", out var queryId) && queryId is string userIdFromRoute;
+            var hasId = context.ActionArguments.TryGetValue("userId", out var queryId) && queryId is string idFromRoute;
 
 
             if (token == null)
