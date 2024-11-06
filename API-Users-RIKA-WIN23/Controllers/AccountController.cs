@@ -29,8 +29,9 @@ namespace API_Users_RIKA_WIN23.Controllers
         }
         #endregion
 
-        //Should be admin only endpoint
         #region Get
+        //Only Accessible with proper token
+        [UserJwtReq]
         [Route("/api/Account/{email}")]
         [HttpGet]
         public async Task<IActionResult> GetUserAsync(string email)
@@ -44,7 +45,8 @@ namespace API_Users_RIKA_WIN23.Controllers
             return BadRequest();
         }
 
-        //Should be admin only endpoint
+        //Is now admin only endpoint
+        [AdminJwtReq]
         [HttpGet]
         public async Task<IActionResult> GetUsersAsync(int count = 0)
         {
