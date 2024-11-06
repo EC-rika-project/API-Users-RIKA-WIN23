@@ -1,10 +1,12 @@
-﻿using API_Users_RIKA_WIN23.Infrastructure.DTOs;
+﻿using API_Users_RIKA_WIN23.Filters;
+using API_Users_RIKA_WIN23.Infrastructure.DTOs;
 using API_Users_RIKA_WIN23.Infrastructure.Services;
 using API_Users_RIKA_WIN23.Infrastructure.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_Users_RIKA_WIN23.Controllers;
 
+[ApiKey]
 [Route("api/[controller]")]
 [ApiController]
 public class AddressController(AddressService addressService, StatusCodeGenerator statusCodeGenerator) : ControllerBase

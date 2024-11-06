@@ -1,4 +1,5 @@
-﻿using API_Users_RIKA_WIN23.Infrastructure.Context;
+﻿using API_Users_RIKA_WIN23.Filters;
+using API_Users_RIKA_WIN23.Infrastructure.Context;
 using API_Users_RIKA_WIN23.Infrastructure.DTOs;
 using API_Users_RIKA_WIN23.Infrastructure.Entities;
 using API_Users_RIKA_WIN23.Infrastructure.Factories;
@@ -95,6 +96,7 @@ public class AuthController(DataContext context, IConfiguration configuration, U
     //}
     //#endregion
 
+    [ApiKey]
     #region SignIn
     [Route("/api/SignIn")]
     [HttpPost]
@@ -158,10 +160,10 @@ public class AuthController(DataContext context, IConfiguration configuration, U
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Issuer = _configuration["JWT:Issuer"],
-                Audience = _configuration["JWT:Audience_DEV"],
+                Issuer = _configuration.GetConnectionString("JWTissuer"),
+                Audience = _configuration.GetConnectionString("JWTissuer"),
                 Expires = DateTime.Now.AddMinutes(30),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration[$"JWT:Key"]!)), SecurityAlgorithms.HmacSha512),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetConnectionString("JWTSigningKey")!)), SecurityAlgorithms.HmacSha512),
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);

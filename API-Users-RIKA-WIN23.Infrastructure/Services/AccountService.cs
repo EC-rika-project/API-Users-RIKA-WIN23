@@ -114,8 +114,8 @@ public class AccountService(UserManager<UserEntity> userManager, DataContext con
     private async Task<IdentityUserRole<string>> AssignRoleAsync(SignUpDto newUserDto, UserEntity user)
     {
         //This sets Admin role depending on which supplied key was used to set newUserDto.SecurityKey. Not ideal but a quick fix for the time being.
-        var webAppKey = _configuration.GetSection("SecurityKeys")["WebAppKey"];
-        var adminAppKey = _configuration.GetSection("SecurityKeys")["AdminAppKey"];
+        var webAppKey = _configuration.GetConnectionString("WebAppKey");
+        var adminAppKey = _configuration.GetConnectionString("AdminAppKey"); ;
         var userRoleName = string.Empty;
 
         if (newUserDto.SecurityKey == adminAppKey)
