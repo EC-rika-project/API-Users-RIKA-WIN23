@@ -18,83 +18,14 @@ namespace API_Users_RIKA_WIN23.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthController(DataContext context, IConfiguration configuration, UserManager<UserEntity> userManager, AuthService authService, StatusCodeGenerator statusCodeGenerator) : ControllerBase
+public class AuthController(DataContext context, IConfiguration configuration, UserManager<UserEntity> userManager, AuthService authService, StatusCodeGenerator statusCodeGenerator, ILogger<AuthService> logger) : ControllerBase
 {
     private readonly DataContext _context = context;
     private readonly IConfiguration _configuration = configuration;
     private readonly UserManager<UserEntity> _userManager = userManager;
     private readonly AuthService _authService = authService;
     private readonly StatusCodeGenerator _statusCodeGenerator = statusCodeGenerator;
-
-
-    //#region Token Authentication
-    //[Route("/api/JWT")]
-    //[HttpPost]
-    //public IActionResult GetToken(string role, UserDto? user) // maybe this should take in a userentity after signin instead of a UserDto so we have access to those claims.
-    //{
-    //    if (!ModelState.IsValid)
-    //    {
-    //        return BadRequest(ModelState);
-    //    }
-
-    //    if (user == null || string.IsNullOrWhiteSpace(user.UserName))
-    //    {
-    //        return BadRequest("Invalid user data.");
-    //    }
-
-    //    try
-    //    {
-    //        var claims = new List<Claim>();
-
-    //        switch (role)
-    //        {
-    //            case "Admin":
-    //                claims = new()
-    //                {
-    //                    new Claim(ClaimTypes.Name, user.UserName),
-    //                    new Claim(ClaimTypes.Role, $"{role}"),
-    //                    new Claim("Permission", "CanEditAllUsers")
-    //                };
-    //                break;
-
-    //            case "User":
-    //                claims = new()
-    //                {
-    //                    new Claim(ClaimTypes.Name, user.UserName),
-    //                    new Claim(ClaimTypes.Role, $"{role}"),
-    //                    new Claim("Permission", "CanEditSelf")
-    //                };
-    //                break;
-
-    //            default:
-    //                claims = new()
-    //                {
-    //                    new Claim(ClaimTypes.Name, "Guest"),
-    //                    new Claim(ClaimTypes.Role, "Guest"),
-    //                    new Claim("Permission", "CanNotEdit")
-    //                };
-    //                break;
-    //        }
-
-    //        var tokenHandler = new JwtSecurityTokenHandler();
-    //        var tokenDescriptor = new SecurityTokenDescriptor
-    //        {
-    //            Subject = new ClaimsIdentity(claims),
-    //            Issuer = _configuration["JWT:Issuer"],
-    //            Audience = _configuration["JWT:Audience_DEV"],
-    //            Expires = DateTime.Now.AddMinutes(30),
-    //            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration[$"JWT:{role}"]!)), SecurityAlgorithms.HmacSha512),
-    //        };
-
-    //        var token = tokenHandler.CreateToken(tokenDescriptor);
-    //        return Ok(tokenHandler.WriteToken(token));
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        return BadRequest(ex.Message);
-    //    }
-    //}
-    //#endregion
+    private readonly ILogger<AuthService> _logger = logger;
 
     [ApiKey]
     #region SignIn
@@ -107,10 +38,20 @@ public class AuthController(DataContext context, IConfiguration configuration, U
             var signInResult = await _authService.SignInUserAsync(signInDto);
             if (signInResult.StatusCode == Infrastructure.Utilities.StatusCode.OK)
             {
-                var JwtResult = await GenerateJwtAsync(signInDto);
+                var JwtResult = await GenerateJwtAsync(signInDto);                
+                if (JwtResult.StatusCode == Infrastructure.Utilities.StatusCode.CREATED)
+                {
+                    _logger.LogInformation("JwtCreated OK");
+                }
+                else
+                {
+                    _logger.LogError("JWT experienced errors");
+                }
                 return _statusCodeGenerator.HttpSelector(JwtResult);
             }
 
+            _logger.LogError(signInResult.Message);
+            _logger.LogInformation(signInResult.Message);
             return _statusCodeGenerator.HttpSelector(signInResult);
         }
 
@@ -144,9 +85,9 @@ public class AuthController(DataContext context, IConfiguration configuration, U
             var roles = await _userManager.GetRolesAsync(userEntity);
             foreach (var role in roles)
             {
-                claims.Add(new Claim(ClaimTypes.Role, role)); 
+                claims.Add(new Claim(ClaimTypes.Role, role));
             }
-            
+
             if (roles.Contains("admin"))
             {
                 claims.Add(new Claim("permission", "CanEditAllUsers"));
@@ -175,6 +116,7 @@ public class AuthController(DataContext context, IConfiguration configuration, U
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex.Message);
             return ResponseFactory.InternalServerError(ex.Message);
         }
     }
