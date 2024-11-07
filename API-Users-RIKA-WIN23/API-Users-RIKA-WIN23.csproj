@@ -8,6 +8,14 @@
 		<UserSecretsId>72b8ef58-2746-44df-b7c5-a613ff078f5b</UserSecretsId>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <Optimize>False</Optimize>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <Optimize>False</Optimize>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
