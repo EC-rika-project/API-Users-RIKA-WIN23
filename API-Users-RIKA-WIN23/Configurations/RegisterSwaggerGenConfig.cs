@@ -13,7 +13,7 @@ namespace API_Users_RIKA_WIN23.Configurations
                 {
                     Description = "API Key Authentication",
                     Type = SecuritySchemeType.ApiKey,
-                    In = ParameterLocation.Query, // Can change to header here and add headerinfo for every httprequest in controller instead of putting apikey in a query.
+                    In = ParameterLocation.Header, // Can change to header here and add headerinfo for every httprequest in controller instead of putting apikey in a query.
                     Name = "key"
                 });
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
