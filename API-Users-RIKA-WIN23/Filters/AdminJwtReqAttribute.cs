@@ -5,74 +5,73 @@ using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
-namespace API_Users_RIKA_WIN23.Filters
+namespace API_Users_RIKA_WIN23.Filters;
+
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]  
+public class AdminJwtReqAttribute : Attribute, IAsyncActionFilter
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]  
-    public class AdminJwtReqAttribute : Attribute, IAsyncActionFilter
+    public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
-        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+        var configuration = context.HttpContext.RequestServices.GetService<IConfiguration>();
+        var JWTSignature = configuration!.GetValue<string>("JwtKey");
+
+        var token = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+
+        if (token == null)
         {
-            var configuration = context.HttpContext.RequestServices.GetService<IConfiguration>();
-            var JWTSignature = configuration!.GetValue<string>("JwtKey");
+            context.Result = new UnauthorizedResult();
+            return;
+        }
 
-            var token = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-
-            if (token == null)
+        if (string.IsNullOrEmpty(JWTSignature))
+        {
+            context.Result = new ObjectResult("Internal server error occurred, failed to read internal JWT signature")
             {
-                context.Result = new UnauthorizedResult();
-                return;
-            }
+                StatusCode = StatusCodes.Status500InternalServerError
+            };
+            return;
+        }
 
-            if (string.IsNullOrEmpty(JWTSignature))
+        if (ValidateToken(token))
+        {
+            await next();
+        }
+        else
+        {
+            context.Result = new UnauthorizedResult();
+            return;
+        }
+        
+        bool ValidateToken(string token)
+        {
+            try
             {
-                context.Result = new ObjectResult("Internal server error occurred, failed to read internal JWT signature")
+                var handler = new JwtSecurityTokenHandler();
+
+                var validationParameters = new TokenValidationParameters
                 {
-                    StatusCode = StatusCodes.Status500InternalServerError
+                    ValidateIssuer = true,
+                    ValidIssuer = configuration!.GetValue<string>("Issuer"),
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JWTSignature!)),
+                    ClockSkew = TimeSpan.Zero.Add(TimeSpan.FromSeconds(5))
                 };
-                return;
-            }
 
-            if (ValidateToken(token))
-            {
-                await next();
-            }
-            else
-            {
-                context.Result = new UnauthorizedResult();
-                return;
-            }
-            
-            bool ValidateToken(string token)
-            {
-                try
+                var principal = handler.ValidateToken(token, validationParameters, out var validatedToken);
+                var permissionClaim = principal.FindFirst("permission")?.Value;
+
+                if (permissionClaim == "CanEditAllUsers")
                 {
-                    var handler = new JwtSecurityTokenHandler();
-
-                    var validationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidIssuer = configuration!.GetValue<string>("Issuer"),
-                        ValidateAudience = false,
-                        ValidateLifetime = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JWTSignature!)),
-                        ClockSkew = TimeSpan.Zero.Add(TimeSpan.FromSeconds(5))
-                    };
-
-                    var principal = handler.ValidateToken(token, validationParameters, out var validatedToken);
-                    var permissionClaim = principal.FindFirst("permission")?.Value;
-
-                    if (permissionClaim == "CanEditAllUsers")
-                    {
-                        return true;                        
-                    }
-
-                    return false;
+                    return true;                        
                 }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.Message);
-                    return false;
-                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return false;
             }
         }
     }

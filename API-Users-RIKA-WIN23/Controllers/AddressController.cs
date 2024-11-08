@@ -15,7 +15,7 @@ public class AddressController(AddressService addressService, StatusCodeGenerato
     private readonly StatusCodeGenerator _statusCodeGenerator = statusCodeGenerator;
 
     [AdminJwtReq]
-    [HttpPost]
+    [HttpPost("{userId}")]
     public async Task<IActionResult> CreateAddressAsync(string userId)
     {
         if (userId != null)
@@ -28,8 +28,8 @@ public class AddressController(AddressService addressService, StatusCodeGenerato
     }
 
     [UserJwtReq]
-    [Route ("/api/Address/{userId}")]
-    [HttpGet]
+    //[Route ("/api/Address/{userId}")]
+    [HttpGet("{userId}")]
     public async Task<IActionResult> GetAddressAsync(string userId)
     {
         if (!string.IsNullOrWhiteSpace(userId))
@@ -54,8 +54,8 @@ public class AddressController(AddressService addressService, StatusCodeGenerato
     }
 
     [UserJwtReq]
-    [Route("/api/Address/{userId}")]
-    [HttpPut]
+    //[Route("/api/Address/{userId}")]
+    [HttpPut("{userId}")]
     public async Task<IActionResult> UpdateAddressAsync(string userId, UserAddressDto updatedAddressDto)
     {
         if (ModelState.IsValid)
@@ -68,7 +68,7 @@ public class AddressController(AddressService addressService, StatusCodeGenerato
     }
 
     [AdminJwtReq]
-    [HttpDelete]
+    [HttpDelete("{userId}")]
     public async Task<IActionResult> DeleteAddressAsync(string userId)
     {
         if (!string.IsNullOrWhiteSpace(userId))

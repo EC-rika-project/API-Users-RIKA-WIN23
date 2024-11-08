@@ -32,8 +32,8 @@ namespace API_Users_RIKA_WIN23.Controllers
         #region Get
         //Only Accessible with proper token
         [UserJwtReq]
-        [Route("/api/Account/{email}")]
-        [HttpGet]
+        //[Route("/api/Account/{email}")]
+        [HttpGet("{email}")]
         public async Task<IActionResult> GetUserAsync(string email)
         {
             if (email != null)
@@ -61,8 +61,8 @@ namespace API_Users_RIKA_WIN23.Controllers
 
         #region Put
         [UserJwtReq]
-        [Route("/api/Account/{userId}")]
-        [HttpPut]
+        //[Route("/api/Account/{userId}")]
+        [HttpPut("{userId}")]
         public async Task<IActionResult> UpdateUserAsync(string userId, UserDto updatedUserDto)
         {
             var result = await _accountService.UpdateUserAsync(updatedUserDto);
@@ -72,7 +72,7 @@ namespace API_Users_RIKA_WIN23.Controllers
 
         #region Delete
         [UserJwtReq]
-        [HttpDelete]
+        [HttpDelete("{userId}")]
         public async Task<IActionResult> DeleteUserAsync(string userId)
         {
             var result = await _accountService.DeleteUserAsync(userId);
