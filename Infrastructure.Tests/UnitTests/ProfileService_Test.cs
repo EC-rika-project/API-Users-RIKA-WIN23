@@ -34,4 +34,22 @@ public class ProfileService_Test
         Assert.Equal(expectedResult.Message, result.Message);
     }
 
+    [Fact]
+    public async void UpdaterUserProfileAsync_ShouldNotUpdateUserProfileWithNegativeValueForAge_AndReturnInternatlServerErrorWithCustomMessage()
+    {
+        //Arrange
+        var userProfile = new UserProfileDto { Email = "test@domain.com", FirstName = "Test", LastName = "Testsson", Age = -10 };
+        ResponseResult expectedResult = ResponseFactory.InternalServerError($"Failed to save user profile: {"exceptionMessageHere: Age is invalid"}");
+
+        _profileServiceMock.Setup(x => x.UpdateUserProfileAsync(userProfile)).ReturnsAsync(expectedResult);
+
+        //Act
+
+        ResponseResult result = await _profileServiceMock.Object.UpdateUserProfileAsync(userProfile);
+
+        //Assert
+        Assert.Equal(expectedResult, result);
+        Assert.Equal(expectedResult.Message, result.Message);
+    }
+
 }

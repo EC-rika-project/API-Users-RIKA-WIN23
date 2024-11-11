@@ -1,5 +1,6 @@
 ﻿using API_Users_RIKA_WIN23.Infrastructure.DTOs;
 using API_Users_RIKA_WIN23.Infrastructure.Entities;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace API_Users_RIKA_WIN23.Infrastructure.Factories;
 
@@ -22,7 +23,7 @@ public class AddressFactory
         };
     }
     public static UserAddressEntity Create(UserAddressDto dto)
-    {
+    {        
         if (dto == null)
         {
             return null!;

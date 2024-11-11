@@ -4,11 +4,8 @@ using API_Users_RIKA_WIN23.Infrastructure.DTOs;
 using API_Users_RIKA_WIN23.Infrastructure.Factories;
 using API_Users_RIKA_WIN23.Infrastructure.Interfaces;
 using API_Users_RIKA_WIN23.Infrastructure.Utilities;
-using Microsoft.Extensions.Logging;
 using Moq;
-using System.Data.Common;
-using System.Reflection.Metadata;
-using System.Text.RegularExpressions;
+
 
 namespace Infrastructure.Tests.UnitTests;
 
