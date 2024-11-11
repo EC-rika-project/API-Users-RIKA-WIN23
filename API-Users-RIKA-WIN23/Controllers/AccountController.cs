@@ -1,11 +1,12 @@
-﻿using API_Users_RIKA_WIN23.Infrastructure.DTOs;
+﻿using API_Users_RIKA_WIN23.Filters;
+using API_Users_RIKA_WIN23.Infrastructure.DTOs;
 using API_Users_RIKA_WIN23.Infrastructure.Services;
 using API_Users_RIKA_WIN23.Infrastructure.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_Users_RIKA_WIN23.Controllers
 {
-    // Create DataAnnotation for APIkey in initialize here.
+    [ApiKey]
     [Route("api/[controller]")]
     [ApiController]
     public class AccountController(StatusCodeGenerator statusCodeSelector, AccountService accountService) : ControllerBase
@@ -28,10 +29,11 @@ namespace API_Users_RIKA_WIN23.Controllers
         }
         #endregion
 
-        //Should be admin only endpoint
         #region Get
-        [Route("/api/Account/{email}")]
-        [HttpGet]
+        //Only Accessible with proper token
+        [UserJwtReq]
+        //[Route("/api/Account/{email}")]
+        [HttpGet("{email}")]
         public async Task<IActionResult> GetUserAsync(string email)
         {
             if (email != null)
@@ -43,7 +45,8 @@ namespace API_Users_RIKA_WIN23.Controllers
             return BadRequest();
         }
 
-        //Should be admin only endpoint
+        //This is now an admin only endpoint
+        [AdminJwtReq]
         [HttpGet]
         public async Task<IActionResult> GetUsersAsync(int count = 0)
         {
@@ -57,8 +60,10 @@ namespace API_Users_RIKA_WIN23.Controllers
         #endregion
 
         #region Put
-        [HttpPut]
-        public async Task<IActionResult> UpdateUserAsync(UserDto updatedUserDto)
+        [UserJwtReq]
+        //[Route("/api/Account/{userId}")]
+        [HttpPut("{userId}")]
+        public async Task<IActionResult> UpdateUserAsync(string userId, UserDto updatedUserDto)
         {
             var result = await _accountService.UpdateUserAsync(updatedUserDto);
             return _statusCodeGenerator.HttpSelector(result);
@@ -66,10 +71,11 @@ namespace API_Users_RIKA_WIN23.Controllers
         #endregion
 
         #region Delete
-        [HttpDelete]
-        public async Task<IActionResult> DeleteUserAsync(string id)
+        [UserJwtReq]
+        [HttpDelete("{userId}")]
+        public async Task<IActionResult> DeleteUserAsync(string userId)
         {
-            var result = await _accountService.DeleteUserAsync(id);
+            var result = await _accountService.DeleteUserAsync(userId);
             return _statusCodeGenerator.HttpSelector(result);
         }
         #endregion

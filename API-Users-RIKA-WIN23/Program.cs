@@ -1,3 +1,4 @@
+using API_Users_RIKA_WIN23.Configurations;
 using API_Users_RIKA_WIN23.Infrastructure.Context;
 using API_Users_RIKA_WIN23.Infrastructure.Entities;
 using API_Users_RIKA_WIN23.Infrastructure.Services;
@@ -23,6 +24,8 @@ builder.Services.AddDefaultIdentity<UserEntity>(x =>
 })
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<DataContext>();
+
+builder.Services.RegisterSwaggerGen(builder.Configuration);
 
 builder.Services.AddScoped<StatusCodeGenerator>();
 builder.Services.AddScoped<AuthService>();

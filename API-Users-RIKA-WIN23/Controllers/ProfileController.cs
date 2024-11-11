@@ -1,10 +1,12 @@
-﻿using API_Users_RIKA_WIN23.Infrastructure.DTOs;
+﻿using API_Users_RIKA_WIN23.Filters;
+using API_Users_RIKA_WIN23.Infrastructure.DTOs;
 using API_Users_RIKA_WIN23.Infrastructure.Services;
 using API_Users_RIKA_WIN23.Infrastructure.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_Users_RIKA_WIN23.Controllers;
 
+[ApiKey]
 [Route("api/[controller]")]
 [ApiController]
 public class ProfileController(StatusCodeGenerator statusCodeGenerator, ProfileService profileService) : ControllerBase
@@ -14,7 +16,8 @@ public class ProfileController(StatusCodeGenerator statusCodeGenerator, ProfileS
 
     #region User Profile Endpoints
     // We should check here for permissions and only let admins access this endpoint.
-    [HttpPost]
+    [AdminJwtReq]
+    [HttpPost("{email}")]
     public async Task<IActionResult> CreateUserProfileAsync(string email)
     {
         if (!string.IsNullOrWhiteSpace(email))
@@ -25,7 +28,8 @@ public class ProfileController(StatusCodeGenerator statusCodeGenerator, ProfileS
         return BadRequest();
     }
 
-    [HttpGet]
+    [UserJwtReq]
+    [HttpGet("{userId}")]
     public async Task<IActionResult> GetUserProfileAsync(string userId)
     {
         if (ModelState.IsValid)
@@ -36,8 +40,10 @@ public class ProfileController(StatusCodeGenerator statusCodeGenerator, ProfileS
         return BadRequest();
     }
 
-    [HttpPut]
-    public async Task<IActionResult> UpdateUserProfileAsync(UserProfileDto dto)
+    [UserJwtReq]
+    //[Route("/api/Profile/{userId}")]
+    [HttpPut("{userId}")]
+    public async Task<IActionResult> UpdateUserProfileAsync(string userId, UserProfileDto dto)
     {
         if (ModelState.IsValid)
         {
@@ -48,7 +54,8 @@ public class ProfileController(StatusCodeGenerator statusCodeGenerator, ProfileS
     }
 
     // We should check here for permissions and only let admins access this endpoint.
-    [HttpDelete]
+    [AdminJwtReq]
+    [HttpDelete("{userId}")]
     public async Task<IActionResult> DeleteUserProfileAsync(string userId)
     {
         if (ModelState.IsValid)

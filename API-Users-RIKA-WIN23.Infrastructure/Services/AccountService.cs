@@ -6,6 +6,7 @@ using API_Users_RIKA_WIN23.Infrastructure.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.ComponentModel.DataAnnotations;
 
 
 namespace API_Users_RIKA_WIN23.Infrastructure.Services;
@@ -114,8 +115,8 @@ public class AccountService(UserManager<UserEntity> userManager, DataContext con
     private async Task<IdentityUserRole<string>> AssignRoleAsync(SignUpDto newUserDto, UserEntity user)
     {
         //This sets Admin role depending on which supplied key was used to set newUserDto.SecurityKey. Not ideal but a quick fix for the time being.
-        var webAppKey = _configuration.GetSection("SecurityKeys")["WebAppKey"];
-        var adminAppKey = _configuration.GetSection("SecurityKeys")["AdminAppKey"];
+        var webAppKey = _configuration.GetValue<string>("WebAppKey");
+        var adminAppKey = _configuration.GetValue<string>("AdminAppKey"); ;
         var userRoleName = string.Empty;
 
         if (newUserDto.SecurityKey == adminAppKey)
@@ -291,20 +292,20 @@ public class AccountService(UserManager<UserEntity> userManager, DataContext con
     #endregion
 
     #region Delete
-    public async Task<ResponseResult> DeleteUserAsync(string id)
+    public async Task<ResponseResult> DeleteUserAsync(string userId)
     {
         try
         {
-            var existingUser = await _userManager.FindByIdAsync(id);
+            var existingUser = await _userManager.FindByIdAsync(userId);
             if (existingUser == null)
             {
-                return ResponseFactory.NotFound($"There is no user with Id: {id} in database.");
+                return ResponseFactory.NotFound($"There is no user with Id: {userId} in database.");
             }
 
             var result = await _userManager.DeleteAsync(existingUser);
             if (result.Succeeded)
             {
-                return ResponseFactory.Ok($"User with Id: {id}, was deleted succesfully.");
+                return ResponseFactory.Ok($"User with Id: {userId}, was deleted succesfully.");
             }
             return ResponseFactory.InternalServerError($"Failed to delete user in method: _userManager.DeleteAsync(existingUser)");
         }

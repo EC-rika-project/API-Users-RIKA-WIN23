@@ -1,10 +1,12 @@
-﻿using API_Users_RIKA_WIN23.Infrastructure.DTOs;
+﻿using API_Users_RIKA_WIN23.Filters;
+using API_Users_RIKA_WIN23.Infrastructure.DTOs;
 using API_Users_RIKA_WIN23.Infrastructure.Services;
 using API_Users_RIKA_WIN23.Infrastructure.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_Users_RIKA_WIN23.Controllers;
 
+[ApiKey]
 [Route("api/[controller]")]
 [ApiController]
 public class AddressController(AddressService addressService, StatusCodeGenerator statusCodeGenerator) : ControllerBase
@@ -12,7 +14,8 @@ public class AddressController(AddressService addressService, StatusCodeGenerato
     private readonly AddressService _addressService = addressService;
     private readonly StatusCodeGenerator _statusCodeGenerator = statusCodeGenerator;
 
-    [HttpPost]
+    [AdminJwtReq]
+    [HttpPost("{userId}")]
     public async Task<IActionResult> CreateAddressAsync(string userId)
     {
         if (userId != null)
@@ -24,8 +27,9 @@ public class AddressController(AddressService addressService, StatusCodeGenerato
         return BadRequest();
     }
 
-    [Route ("/api/Address/{userId}")]
-    [HttpGet]
+    [UserJwtReq]
+    //[Route ("/api/Address/{userId}")]
+    [HttpGet("{userId}")]
     public async Task<IActionResult> GetAddressAsync(string userId)
     {
         if (!string.IsNullOrWhiteSpace(userId))
@@ -37,6 +41,7 @@ public class AddressController(AddressService addressService, StatusCodeGenerato
         return BadRequest();
     }
 
+    [AdminJwtReq]
     [HttpGet]
     public async Task<IActionResult> GetAddressesAsync(int count = 0)
     {
@@ -48,8 +53,10 @@ public class AddressController(AddressService addressService, StatusCodeGenerato
         return BadRequest();
     }
 
-    [HttpPut]
-    public async Task<IActionResult> UpdateAddressAsync(UserAddressDto updatedAddressDto)
+    [UserJwtReq]
+    //[Route("/api/Address/{userId}")]
+    [HttpPut("{userId}")]
+    public async Task<IActionResult> UpdateAddressAsync(string userId, UserAddressDto updatedAddressDto)
     {
         if (ModelState.IsValid)
         {
@@ -60,7 +67,8 @@ public class AddressController(AddressService addressService, StatusCodeGenerato
         return BadRequest();
     }
 
-    [HttpDelete]
+    [AdminJwtReq]
+    [HttpDelete("{userId}")]
     public async Task<IActionResult> DeleteAddressAsync(string userId)
     {
         if (!string.IsNullOrWhiteSpace(userId))
