@@ -20,7 +20,7 @@ public class ProfileService_Test
     public async void CreateUserProfileAsync_ShouldCreateUserProfile_AndReturnStatusCode_Created()
     {
         //Arrange
-        var userProfile = new SignUpDto { Email = "test@domain.com", FirstName = "Test", LastName = "Testsson"};
+        var userProfile = new SignUpDto { Email = "test@domain.com", FirstName = "Test", LastName = "Testsson" };
         ResponseResult expectedResult = ResponseFactory.Created("User profile created");
 
         _profileServiceMock.Setup(x => x.CreateUserProfileAsync(userProfile)).ReturnsAsync(expectedResult);
