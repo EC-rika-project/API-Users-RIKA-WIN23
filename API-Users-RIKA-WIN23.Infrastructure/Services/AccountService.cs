@@ -2,6 +2,7 @@
 using API_Users_RIKA_WIN23.Infrastructure.DTOs;
 using API_Users_RIKA_WIN23.Infrastructure.Entities;
 using API_Users_RIKA_WIN23.Infrastructure.Factories;
+using API_Users_RIKA_WIN23.Infrastructure.Interfaces;
 using API_Users_RIKA_WIN23.Infrastructure.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace API_Users_RIKA_WIN23.Infrastructure.Services;
 
-public class AccountService(UserManager<UserEntity> userManager, DataContext context, IConfiguration configuration)
+public class AccountService(UserManager<UserEntity> userManager, DataContext context, IConfiguration configuration) : IAccountService
 {
     private readonly UserManager<UserEntity> _userManager = userManager;
     private readonly DataContext _context = context;
