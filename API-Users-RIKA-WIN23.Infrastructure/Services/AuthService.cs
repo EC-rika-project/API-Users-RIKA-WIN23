@@ -1,12 +1,13 @@
 ﻿using API_Users_RIKA_WIN23.Infrastructure.DTOs;
 using API_Users_RIKA_WIN23.Infrastructure.Entities;
 using API_Users_RIKA_WIN23.Infrastructure.Factories;
+using API_Users_RIKA_WIN23.Infrastructure.Interfaces;
 using API_Users_RIKA_WIN23.Infrastructure.Utilities;
 using Microsoft.AspNetCore.Identity;
 
 namespace API_Users_RIKA_WIN23.Infrastructure.Services;
 
-public class AuthService(SignInManager<UserEntity> signInManager, AccountService accountService)
+public class AuthService(SignInManager<UserEntity> signInManager, AccountService accountService) : IAuthService
 {
     private readonly SignInManager<UserEntity> _signInManager = signInManager;
     private readonly AccountService _accountService = accountService;

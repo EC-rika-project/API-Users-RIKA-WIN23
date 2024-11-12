@@ -3,7 +3,7 @@ using API_Users_RIKA_WIN23.Infrastructure.Entities;
 
 namespace API_Users_RIKA_WIN23.Infrastructure.Factories;
 
-public class UserFactory
+public static class UserFactory
 {
     public static UserEntity Create(UserDto dto)
     {

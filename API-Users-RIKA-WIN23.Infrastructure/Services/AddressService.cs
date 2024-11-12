@@ -2,19 +2,24 @@
 using API_Users_RIKA_WIN23.Infrastructure.DTOs;
 using API_Users_RIKA_WIN23.Infrastructure.Entities;
 using API_Users_RIKA_WIN23.Infrastructure.Factories;
+using API_Users_RIKA_WIN23.Infrastructure.Interfaces;
 using API_Users_RIKA_WIN23.Infrastructure.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace API_Users_RIKA_WIN23.Infrastructure.Services;
 
-public class AddressService(UserManager<UserEntity> userManager, DataContext dataContext)
+//public class AddressService(DataContext dataContext) //: IAddressService
+public class AddressService(UserManager<UserEntity> userManager, DataContext dataContext) : IAddressService
+
 {
     private readonly UserManager<UserEntity> _userManager = userManager;
     private readonly DataContext _context = dataContext;
 
     public async Task<ResponseResult> CreateUserAddressAsync(string id)
     {
+        //var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+
         var user = await _userManager.FindByIdAsync(id);
         if (user == null)
         {
@@ -105,7 +110,7 @@ public class AddressService(UserManager<UserEntity> userManager, DataContext dat
         var updatedAddress = AddressFactory.Create(updatedAddressDto);
 
         try
-        {  
+        {
             _context.Addresses.Entry(existingAddress).CurrentValues.SetValues(updatedAddress);
             await _context.SaveChangesAsync();
             updatedAddressDto = AddressFactory.Create(updatedAddress);
@@ -117,7 +122,7 @@ public class AddressService(UserManager<UserEntity> userManager, DataContext dat
         }
     }
 
-    public async Task<ResponseResult>DeleteUserAddressAsync(string userId)
+    public async Task<ResponseResult> DeleteUserAddressAsync(string userId)
     {
         try
         {
